@@ -247,8 +247,8 @@ if (!empty($_SESSION["foodboard-cart"])) {
 				<div class="row">
 					<div class="col-md-8">
 						<ul id="subFooterLinks">
-							<li><a href="img/kelompok2.jpg" target="_blank">With <i class="fa fa-heart pulse"></i> by Kelompok 2</a></li>
-							<li><a href="pdf/terms.pdf" target="_blank">Terms and conditions</a></li>
+							<li><a href="../img/kelompok2.jpg" target="_blank">With <i class="fa fa-heart pulse"></i> by Kelompok 2</a></li>
+							<li><a href="./../pdf/terms.pdf" target="_blank">Terms and conditions</a></li>
 						</ul>
 					</div>
 					<div class="col-md-4">
