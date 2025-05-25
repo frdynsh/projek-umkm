@@ -455,14 +455,14 @@
 	}
 
 	// Function to update sub summary
-	function updateSubSum(id, rowId, itemPrice, actualQty) {
-
-		// Calculate subSum
-		subSum = (itemPrice * 1) * (actualQty * 1);
-
-		// Update subSum
-		$('#cartItem' + id + rowId + ' .order-list-details .order-list-price').text(subSum.toFixed(2));
+	function updateSubSum(id, rowId, originalItemPrice, actualQty) {
+		let pricePerItem = parseInt(originalItemPrice, 10);
+		let subSum = pricePerItem * actualQty;
+		$('#cartItem' + id + rowId + ' .order-list-details .order-list-price').text(subSum);
+		formatPrice(); // pastikan harga diformat Rp
 	}
+
+
 
 	// Function to update total summary
 	function updateTotal() {
