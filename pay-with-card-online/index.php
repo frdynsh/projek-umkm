@@ -58,8 +58,7 @@ $result = $conn->query($sql);
         <a href="db/admin.php" class="btn btn-danger">Manage Products (Admin)</a>
     <?php endif; ?>
 
-=======
->>>>>>> 09df346049cd1c9676ecc911cfb4d261a7f836fb
+
     <!-- Preloader -->
     <div id="preloader">
         <div data-loader="circle-side"></div>
