@@ -174,7 +174,7 @@ require_once __DIR__ . '/Config/Config.php';
 								<div id="gridItem02" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item  dakbal">
 									<div class="item-body">
 										<figure>
-											<div class="ribbon-discount"><span>- 10%</span></div>
+											<div class="ribbon-discount"><span>- 20%</span></div>
 											<img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/02.jpg" class="img-fluid lazy" alt="">
 											<a href="#modalDetailsItem02" class="item-body-link modal-opener">
 												<div class="item-title">
@@ -192,7 +192,7 @@ require_once __DIR__ . '/Config/Config.php';
 												<span class="item-price format-price">10000</span>
 											</li>
 											<li>
-												<span class="item-price-discount format-price">12000</span>
+												<span class="item-price-discount format-price">12500</span>
 											</li>
 											<li>
 												<a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
@@ -291,11 +291,10 @@ require_once __DIR__ . '/Config/Config.php';
 														<input type="radio" value="delivery" name="transfer" checked><span class="checkmark"></span>
 														<span class="radio-caption">Delivery Fee</span><span class="option-price format-price transfer">10000</span>
 													</label>
-
 													<!-- Option Take Away -->
 													<label class="cbx radio-wrapper no-edges">
 														<input type="radio" value="take away" name="transfer" checked><span class="checkmark"></span>
-														<span class="radio-caption">Take Away</span><span class="option-price format-price transfer">0.00</span>
+														<span class="radio-caption">Take Away</span><span class="option-price format-price transfer">0</span>
 													</label>
 												</div>
 											</div>
@@ -303,7 +302,7 @@ require_once __DIR__ . '/Config/Config.php';
 											<!-- Total -->
 											<div class="row total-container">
 												<div class="col-md-12 p-0">
-													<span class="totalTitle">Total</span><span class="totalValue format-price float-right">0.00</span>
+													<span class="totalTitle">Total</span><span class="totalValue format-price float-right">0</span>
 													<input type="hidden" id="totalOrderSummary" class="total format-price" name="total" value="" data-parsley-errors-container="#totalError" data-parsley-empty-order="" disabled />
 												</div>
 											</div>
@@ -372,7 +371,7 @@ require_once __DIR__ . '/Config/Config.php';
 												</div>
 												<div class="row total-container">
 													<div class="col-md-12 p-0">
-														<span class="totalTitle">Total</span><span class="totalValue format-price float-right">0.00</span>
+														<span class="totalTitle">Total</span><span class="totalValue format-price float-right">0</span>
 													</div>
 												</div>
 												<div class="row">
@@ -458,14 +457,14 @@ require_once __DIR__ . '/Config/Config.php';
 						<h5 class="footer-heading">Contacts</h5>
 						<ul class="list-unstyled contact-links">
 							<li><i class="icon icon-map-marker"></i><a href="https://maps.app.goo.gl/3kMUttsyy6Fy6rXi8" class="footer-link" target="_blank">Address: Stadion Singaperbangsa, Karawang, Indonesia</a></li>
-							<li><i class="icon icon-envelope3"></i><a href="mailto:frdynsh11@gmail.com" class="footer-link">Mail: frdynsh11@gmail.com</a></li>
+							<li><i class="icon icon-envelope3"></i><a href="mailto:tulangrangukarawang@gmail.com" class="footer-link">Mail: tulangrangukarawang@gmail.com</a></li>
 							<li><i class="icon icon-phone2"></i><a href="tel:+6285817128530" class="footer-link">Phone: +6285817128530</a></li>
 						</ul>
 					</div>
 					<div class="col-md-2">
 						<h5 class="footer-heading">Find Us On</h5>
 						<ul class="list-unstyled social-links">
-							<li><a href="https://facebook.com/ferdi.yansah.180072" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a></li>
+							<li><a href="https://www.facebook.com/share/18uqwzb3FC/" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a></li>
 							<li><a href="https://wa.me/6285817128530" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
 							<li><a href="https://instagram.com/tulangrangu_karawang" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a></li>
 							<li><a href="https://tiktok.com/@tulangrangu_karawangg" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a></li>
@@ -476,8 +475,8 @@ require_once __DIR__ . '/Config/Config.php';
 				<div class="row">
 					<div class="col-md-8">
 						<ul id="subFooterLinks">
-							<li><a href="img/kelompok2.jpg" target="_blank">With <i class="fa fa-heart pulse"></i> by Kelompok 2</a></li>
-							<li><a href="pdf/terms.pdf" target="_blank">Terms and conditions</a></li>
+							<li><a href="../img/kelompok2.jpg" target="_blank">With <i class="fa fa-heart pulse"></i> by Kelompok 2</a></li>
+							<li><a href="../pdf/terms.pdf" target="_blank">Terms and conditions</a></li>
 						</ul>
 					</div>
 					<div class="col-md-4">
@@ -570,14 +569,14 @@ require_once __DIR__ . '/Config/Config.php';
 			<div class="row">
 				<div class="col-md-12 col-sm-12">
 					<input type="hidden" id="item01ExtraTitle" name="item01ExtraTitle" value="Extra Cheese" />
-					<input type="checkbox" id="item01Extra" class="inp-cbx" name="item01Extra" value="3.50" />
+					<input type="checkbox" id="item01Extra" class="inp-cbx" name="item01Extra" value="2000" />
 					<label class="cbx mb-0" for="item01Extra">
 						<span>
 							<svg width="12px" height="10px" viewbox="0 0 12 10">
 								<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 							</svg>
 						</span>
-						<span>Extra Cheese</span><span class="option-price format-price">2.00</span>
+						<span>Extra Cheese</span><span class="option-price format-price">2000</span>
 					</label>
 				</div>
 			</div>
@@ -635,14 +634,14 @@ require_once __DIR__ . '/Config/Config.php';
 			<div class="row">
 				<div class="col-md-12 col-sm-12">
 					<input type="hidden" id="item02ExtraTitle" name="item02ExtraTitle" value="Extra Cheese" />
-					<input type="checkbox" id="item02Extra" class="inp-cbx" name="item02Extra" value="3.50" />
+					<input type="checkbox" id="item02Extra" class="inp-cbx" name="item02Extra" value="2000" />
 					<label class="cbx" for="item02Extra">
 						<span>
 							<svg width="12px" height="10px" viewbox="0 0 12 10">
 								<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 							</svg>
 						</span>
-						<span>Extra Cheese</span><span class="option-price format-price">2.00</span>
+						<span>Extra Cheese</span><span class="option-price format-price">2000</span>
 					</label>
 				</div>
 			</div>
@@ -700,14 +699,14 @@ require_once __DIR__ . '/Config/Config.php';
 			<div class="row">
 				<div class="col-md-12 col-sm-12">
 					<input type="hidden" id="item03ExtraTitle" name="item03ExtraTitle" value="Extra Cheese" />
-					<input type="checkbox" id="item03Extra" class="inp-cbx" name="item03Extra" value="2.00" />
+					<input type="checkbox" id="item03Extra" class="inp-cbx" name="item03Extra" value="2000" />
 					<label class="cbx" for="item03Extra">
 						<span>
 							<svg width="12px" height="10px" viewbox="0 0 12 10">
 								<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 							</svg>
 						</span>
-						<span>Extra Cheese</span><span class="option-price format-price">2.00</span>
+						<span>Extra Cheese</span><span class="option-price format-price">2000</span>
 					</label>
 				</div>
 			</div>
@@ -765,7 +764,7 @@ require_once __DIR__ . '/Config/Config.php';
 			<div class="row">
 				<div class="col-md-12 col-sm-12">
 					<input type="hidden" id="item04ExtraTitle" name="item04ExtraTitle" value="Extra Cheese" />
-					<input type="checkbox" id="item04Extra" class="inp-cbx" name="item04Extra" value="2.00" />
+					<input type="checkbox" id="item04Extra" class="inp-cbx" name="item04Extra" value="2000" />
 					<label class="cbx" for="item04Extra">
 						<span>
 							<svg width="12px" height="10px" viewbox="0 0 12 10">
