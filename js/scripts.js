@@ -432,7 +432,7 @@
 	var actualQty = 0;
 	var maxQty = 10;
 	var subSum = 0;
-	var deliveryFee = 10;
+	var deliveryFee = 0;
 	var total = 0;
 
 	// Function to set empty cart image
@@ -445,7 +445,7 @@
 		$('#emptyCart').html('<div class="order-list-img"><img src="../img/bg/empty-cart-small.png" alt="Your cart is empty"/></div><div class="order-list-details"> <h4>Your cart is empty</a><br/><small>Start adding items</small></h4> <div class="order-list-price format-price">0.00</div></div>');
 		formatPrice();
 	}
-
+	
 	// Function to check if the cart is empty
 	function isCartEmpty() {
 
@@ -466,32 +466,35 @@
 
 	// Function to update total summary
 	function updateTotal() {
-
 		total = 0;
 
 		// Update total with prices in order list
 		$('.order-list-price').each(function () {
-
-			total += ($(this).text().match(/[0-9.]+/g) * 1);
-
+			let raw = $(this).text().replace(/[^\d]/g, '');
+			total += parseInt(raw, 10);
 		});
-		//Add delivery fee
-		total = total + (deliveryFee * 1);
 
-		// Set total
-		$('.total').val(total.toFixed(2));
-		$('.totalValue').text(total.toFixed(2));
+		let selectedDelivery = $('input[name="transfer"]:checked').closest('label');
+		let deliveryText = selectedDelivery.find('.option-price.transfer').text();
+		deliveryFee = parseInt(deliveryText.replace(/[^\d]/g, ''), 10);
+
+		//Add delivery fee
+		total += deliveryFee;
 
 		// If cart is empty do not calculate any cost
 		if ($('ul#itemList li#emptyCart').length > 0) {
 			total = 0;
-			$('.total').val(total.toFixed(2));
-			$('.totalValue').text(total.toFixed(2));
 		}
+			$('.total').val(total);
+			$('.totalValue').text(total);
 
 		formatPrice();
-
 	}
+
+	// Ketika user ganti pilihan antar Take Away atau Delivery
+	$('input[name="transfer"]').on('change', function () {
+		updateTotal();
+	});
 
 	// Function to insert item into its dedicated cart row based on: id, rowId, itemSubtitle, thumbnailPath, itemTitle, extraTitle, itemPrice
 	function insertItemIntoCartRow(id, rowId, itemSubtitle, thumbnailPath, itemTitle, extraTitle, itemPrice) {
@@ -500,7 +503,7 @@
 		$('#itemList').append('<li id="cartItem' + id + rowId + '"></li>');
 
 		// Insert item into its dedicated row in the cart
-		$('#cartItem' + id + rowId).html('<div class="order-list-img"><img src="' + thumbnailPath + '" alt=""></div><div class="order-list-details"><h4>' + itemTitle + '<br/> <small>' + itemSubtitle + extraTitle + '</small> </h4> <div class="qty-buttons"> <input type="button" value="+" class="qtyplus" name="plus"> <input type="text" name="qty" value="1" class="qty form-control"> <input type="button" value="-" class="qtyminus" name="minus"> </div><div class="order-list-price format-price">' + itemPrice.toFixed(2) + '</div><div class="order-list-delete"><a href="javascript:;" id="deleteCartItem' + id + rowId + '"><i class="icon icon-trash"></i></a></div></div>');
+		$('#cartItem' + id + rowId).html('<div class="order-list-img"><img src="' + thumbnailPath + '" alt=""></div><div class="order-list-details"><h4>' + itemTitle + '<br/> <small>' + itemSubtitle + extraTitle + '</small> </h4> <div class="qty-buttons"> <input type="button" value="+" class="qtyplus" name="plus"> <input type="text" name="qty" value="1" class="qty form-control"> <input type="button" value="-" class="qtyminus" name="minus"> </div><div class="order-list-price format-price">' + itemPrice + '</div><div class="order-list-delete"><a href="javascript:;" id="deleteCartItem' + id + rowId + '"><i class="icon icon-trash"></i></a></div></div>');
 
 		// Handle if an added item will be deleted
 		$('#deleteCartItem' + id + rowId).on('click', function () {
@@ -644,12 +647,23 @@
 		size = $('input[name="size-options-item-' + id + '"]:checked').val();
 
 		itemTitle = $('#gridItem' + id + ' .item-title h3').text();
-		itemPrice = $('input[name="size-options-item-' + id + '"]:checked').nextAll('.option-price').text();
-		itemPrice = (itemPrice.match(/[0-9.]+/g)) * 1; // Find digits, dot and convert to number
+		// Ambil ukuran yang dipilih
+		size = $('input[name="size-options-item-' + id + '"]:checked').val();
+
+		// Temukan input radio yang dipilih dan ambil label induknya
+		let label = $('input[name="size-options-item-' + id + '"]:checked').closest('label');
+
+		// Ambil harga dari dalam label itu
+		let priceText = label.find('.option-price').first().text().trim();
+		itemPrice = parseInt(priceText.replace(/[^\d]/g, ''), 10);
+
 
 		extraIsChecked = $('#item' + id + 'Extra').is(':checked');
 		extraTitle = $('#item' + id + 'ExtraTitle').val();
-		extraPrice = ($('#item' + id + 'Extra').val()) * 1; // Find digits, dot and convert to number
+		let extraLabel = $('label[for="item' + id + 'Extra"]');
+		let extraText = extraLabel.find('.option-price').first().text().trim();
+		extraPrice = parseInt(extraText.replace(/[^\d]/g, ''), 10);
+
 
 		thumbnailPath = '../img/gallery/grid-items-small/' + id + '.jpg';
 
@@ -774,8 +788,10 @@
 		description = $('#gridItem' + id + ' .item-title small').text();
 
 		itemTitle = $('#gridItem' + id + ' .item-title h3').text();
-		itemPrice = $('#gridItem' + id + ' .item-price').text();
-		itemPrice = (itemPrice.match(/[0-9.]+/g)) * 1; // Find digits, dot and convert to number
+		itemPrice = $('#gridItem' + id + ' .item-price').text()
+			.replace(/[^\d]/g, '');
+		itemPrice = parseInt(itemPrice, 10);
+
 
 		thumbnailPath = '../img/gallery/grid-items-small/' + id + '.jpg';
 
