@@ -57,7 +57,7 @@ $result = $conn->query($sql);
 
 	<?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
         <a href="db/admin.php" class="btn btn-danger">Manage Products (Admin)</a>
-    <?php endif; ?>
+        <?php endif; ?>
 
 
 	<!-- Preloader -->
