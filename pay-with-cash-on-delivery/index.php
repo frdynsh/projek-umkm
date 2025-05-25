@@ -12,6 +12,7 @@ if ($conn->connect_error) {
 $sql = "SELECT * FROM products";
 $result = $conn->query($sql);
 
+
 ?>
 
 <!DOCTYPE html>
@@ -53,9 +54,11 @@ $result = $conn->query($sql);
 
 <body>
 
+
 	<?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
         <a href="db/admin.php" class="btn btn-danger">Manage Products (Admin)</a>
     <?php endif; ?>
+
 
 	<!-- Preloader -->
 	<div id="preloader">
@@ -104,7 +107,9 @@ $result = $conn->query($sql);
 								</li>
 								<li><span><a href="../faq.html">Faq</a></span></li>
 								<li><span><a href="../contacts.html">Contacts</a></span></li>
+
 								<li><span><a href="/RPL/projek-umkm-main/db/login.php">Login</a></span></li>
+
 							</ul>
 						</nav>
 						<!-- Menu End -->
@@ -156,6 +161,7 @@ $result = $conn->query($sql);
 							</div>
 							<!-- Filter Area End -->
 
+
 							 <!-- 🔴 Display products -->
 							<div class="container mt-5">
                                 <h2 class="mb-4">Our Products</h2>
@@ -180,6 +186,7 @@ $result = $conn->query($sql);
                                     <?php endif; ?>
                                 </div>
                             </div>
+
 
 							<!-- Grid -->
 							<div class="row grid">

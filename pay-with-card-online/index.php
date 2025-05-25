@@ -1,8 +1,11 @@
 <?php
+
 session_start();
+
 use Foodboard\Config;
 
 require_once __DIR__ . '/Config/Config.php';
+
 
 $conn = new mysqli('localhost', 'root', '', 'rpl_umkm');
 if ($conn->connect_error) {
@@ -11,6 +14,7 @@ if ($conn->connect_error) {
 
 $sql = "SELECT * FROM products";
 $result = $conn->query($sql);
+
 ?>
 
 <!DOCTYPE html>
@@ -50,17 +54,17 @@ $result = $conn->query($sql);
 </head>
 
 <body>
-
     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
         <a href="db/admin.php" class="btn btn-danger">Manage Products (Admin)</a>
     <?php endif; ?>
 
+=======
+>>>>>>> 09df346049cd1c9676ecc911cfb4d261a7f836fb
     <!-- Preloader -->
     <div id="preloader">
         <div data-loader="circle-side"></div>
     </div>
     <!-- Preloader End -->
-    
 
 
     <!-- Page -->
@@ -104,6 +108,7 @@ $result = $conn->query($sql);
                                 </li>
                                 <li><span><a href="../faq.html">Faq</a></span></li>
                                 <li><span><a href="../contacts.html">Contacts</a></span></li>
+
                                 <li><span><a href="/RPL/projek-umkm-main/db/login.php">Login</a></span></li>
                             </ul>
                         </nav>
@@ -156,6 +161,7 @@ $result = $conn->query($sql);
                             </div>
                             <!-- Filter Area End -->
 
+
                             <!-- 🔴 Display products -->
                             <div class="container mt-5">
                                 <h2 class="mb-4">Our Products</h2>
@@ -180,6 +186,7 @@ $result = $conn->query($sql);
                                     <?php endif; ?>
                                 </div>
                             </div>
+
 
                             <!-- Grid -->
                             <div class="row grid">
