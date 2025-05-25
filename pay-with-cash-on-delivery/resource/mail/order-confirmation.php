@@ -1,13 +1,12 @@
 <?php
 
-
-
 use Foodboard\Config;
 
 function getOrderBody($cartItemsArray, $customerDetailsArray, $shippingAmount)
 {
     ob_start();
 
+    $cartItems = $cartItemsArray;
 ?>
 
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -57,29 +56,37 @@ function getOrderBody($cartItemsArray, $customerDetailsArray, $shippingAmount)
                                                                         <th style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; text-align: right" width="15%"><?php echo "Total Price"; ?> (<?php echo Config::CURRENCY_SYMBOL; ?>)</th>
                                                                     </tr>
                                                                     <?php
-                                                                    foreach ($cartItemsArray as $cartItems) {
-                                                                        foreach ($cartItems as $k => $v) {
-                                                                            $productTitle = $cartItems[$k]["name"];
-                                                                            $price = $cartItems[$k]["unit_price"];
-                                                                    ?>
-                                                                            <tr class="product-title-resp">
-                                                                                <td style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; border-right: 1px #E0E0E0 solid;"><?php echo $productTitle; ?></td>
-                                                                                <td data-label="Price" style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; border-right: 1px #E0E0E0 solid; text-align: right"><?php echo number_format($price, 2); ?></td>
-                                                                                <td data-label="Quantity" style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; border-right: 1px #E0E0E0 solid; text-align: right"><?php echo $cartItems[$k]['quantity']; ?></td>
-                                                                                <td data-label="Total" style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; text-align: right"><?php echo number_format($price * $cartItems[$k]['quantity'], 2); ?></td>
+                                                                    $total_price_array = [];
+                                                                    foreach ($cartItemsArray as $k => $item) {
+                                                                        if (is_array($item)) {
+                                                                            $productTitle = $item["name"] ?? "Unknown Product";
+                                                                            $rawPrice = $item["unit_price"] ?? 0;
+                                                                            $quantity = $item["quantity"] ?? 0;
 
-                                                                            </tr>
-                                                                        <?php
-                                                                            $total_price_array[] = $price * $cartItems[$k]['quantity'];
+                                                                            // Hilangkan titik/koma dari price jika perlu
+                                                                            $price = floatval(preg_replace('/[^\d.]/', '', str_replace(',', '.', $rawPrice)));
+                                                                            $total = $price * $quantity;
+                                                                            $total_price_array[] = $total;
+                                                                    ?>
+                                                                        <tr class="product-title-resp">
+                                                                            <td style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; border-right: 1px #E0E0E0 solid;"><?php echo $productTitle; ?></td>
+                                                                            <td data-label="Price" style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; border-right: 1px #E0E0E0 solid; text-align: right"><?php echo number_format($price, 0, ',', '.'); ?></td>
+                                                                            <td data-label="Quantity" style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; border-right: 1px #E0E0E0 solid; text-align: right"><?php echo $quantity; ?></td>
+                                                                            <td data-label="Total" style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; text-align: right"><?php echo number_format($total, 0, ',', '.'); ?></td>
+                                                                        </tr>
+                                                                    <?php
                                                                         }
                                                                     }
                                                                     $sub_total_price = array_sum($total_price_array);
                                                                     if (!empty($shippingAmount)) {
+                                                                        if (!is_numeric($shippingAmount)) {
+                                                                            $shippingAmount = floatval(preg_replace('/[^\d.]/', '', str_replace(',', '.', $shippingAmount)));
+                                                                        }
                                                                         $total_price = $sub_total_price + $shippingAmount;
-                                                                        ?>
+                                                                    ?>
                                                                         <tr class="sub_total">
                                                                             <td style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; border-right: 1px #E0E0E0 solid; text-align: right" align="right" colspan="2"><strong><?php echo "Delivery Fee"; ?> (<?php echo Config::CURRENCY_SYMBOL; ?>)</strong></td>
-                                                                            <td style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; text-align: right" align="right" data-label="Shipping Total" colspan="3"><strong><?php echo number_format($shippingAmount, 2); ?></strong></td>
+                                                                            <td style="padding: 5px 10px; border-bottom: 1px #E0E0E0 solid; text-align: right" align="right" data-label="Shipping Total" colspan="3"><strong><?php echo number_format($shippingAmount, 0, ',', '.'); ?></strong></td>
                                                                         </tr>
                                                                     <?php
                                                                     } else {
@@ -88,7 +95,7 @@ function getOrderBody($cartItemsArray, $customerDetailsArray, $shippingAmount)
                                                                     ?>
                                                                     <tr class="sub_total">
                                                                         <td style="padding: 5px 10px; text-align: right" align="right" colspan="2"><strong><?php echo "Grand Total"; ?> (<?php echo Config::CURRENCY_SYMBOL; ?>)</strong></td>
-                                                                        <td style="padding: 5px 10px; text-align: right" align="right" data-label="Grand Total" colspan="3"><strong><?php echo number_format($total_price, 2); ?></strong></td>
+                                                                        <td style="padding: 5px 10px; text-align: right" align="right" data-label="Grand Total" colspan="3"><strong><?php echo number_format($total_price, 0, ',', '.'); ?></strong></td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>

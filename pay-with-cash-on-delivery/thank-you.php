@@ -8,27 +8,50 @@ require_once __DIR__ . '/Config/Config.php';
 
 if (!empty($_SESSION["foodboard-cart"])) {
 
-    $cartItemsArray = $_SESSION["foodboard-cart"]["items"];
-    $customerDetailsArray = $_SESSION["foodboard-cart"]["customerDetails"];
+    $cartItemsArray = $_SESSION["foodboard-cart"]["items"] ?? [];
+    $customerDetailsArray = $_SESSION["foodboard-cart"]["customerDetails"] ?? [];
+    $deliveryDetailsArray = $_SESSION["foodboard-cart"]["deliveryDetails"] ?? [];
+    $paymentDetailsArray = $_SESSION["foodboard-cart"]["paymentDetails"] ?? [];
+    $shippingAmount = $_SESSION["foodboard-cart"]["shippingAmount"] ?? 0;
+
     $subject = Config::ORDER_EMAIL_SUBJECT;
+
     require_once __DIR__ . '/Service/CheckoutService.php';
     $checkoutModel = new CheckoutService();
 
-    $recipientArr = array(
-        $_SESSION["foodboard-cart"]["customerDetails"]["email"] => $_SESSION["foodboard-cart"]["customerDetails"]["email"]
-    );
+    // Ambil email customer secara langsung
+    $customerEmail = $customerDetailsArray["email"] ?? "";
+
+    // Perbaikan format $recipientArr
+    $recipientArr = [
+        $customerEmail => $customerEmail
+    ];
+
+    // Pastikan $recipientCCArr tetap ada, meskipun kosong
+    $recipientCCArr = [];
 
     if (!empty(Config::RECIPIENT_EMAIL)) {
-        $recipientCCArr = array(
-            Config::RECIPIENT_EMAIL => Config::RECIPIENT_EMAIL
+        $recipientCCArr[Config::RECIPIENT_EMAIL] = Config::RECIPIENT_EMAIL;
+    }
+
+    // Kirim email konfirmasi
+    try {
+        $checkoutService = $checkoutModel->sendOrderEmail(
+            $subject,
+            $cartItemsArray,
+            $shippingAmount,
+            $customerDetailsArray,
+            $recipientArr,
+            $recipientCCArr
         );
+    } catch (Exception $e) {
+        error_log("Gagal kirim email: " . $e->getMessage());
     }
 
 
-    $shippingAmount = $_SESSION["foodboard-cart"]["shippingAmount"];
-    $checkoutService = $checkoutModel->sendOrderEmail($subject, $cartItemsArray, $shippingAmount, $customerDetailsArray, $recipientArr, $recipientCCArr);
 } else {
     header("Location:" . Config::APP_ROOT . Config::WORK_ROOT . "pay-with-cash-on-delivery/order.php");
+    exit;
 }
 ?>
 
@@ -39,8 +62,8 @@ if (!empty($_SESSION["foodboard-cart"])) {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Guide to ordering food with online payment">
-    <meta name="author" content="Juragan Tulang Rangu Karawang">
+    <meta name="description" content="Food order wizard with online payment">
+    <meta name="author" content="UWS">
     <title>Juragan Tulang Rangu Karawang</title>
 
     <!-- Favicon -->
@@ -50,7 +73,7 @@ if (!empty($_SESSION["foodboard-cart"])) {
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Font Awesome CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" >
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
     <!-- Custom Font Icons -->
     <link href="../vendor/icomoon/css/iconfont.min.css" rel="stylesheet">
@@ -64,7 +87,6 @@ if (!empty($_SESSION["foodboard-cart"])) {
     <link href="../vendor/float-labels/css/float-labels.min.css" rel="stylesheet">
 
     <!-- Main CSS -->
-    <link href="./../css/responsive.css" rel="stylesheet">
     <link href="./../css/style.css" rel="stylesheet">
 </head>
 
@@ -96,9 +118,9 @@ if (!empty($_SESSION["foodboard-cart"])) {
                     </div>
                     <div class="col-lg-9 col-6">
                         <ul id="menuIcons">
-							<li><a href="#"><i class="fas fa-sign-in"></i></a></li>
-							<li><a href="#"><i class="fas fa-user-plus"></i></a></li>
-						</ul>
+                            <li><a href="#"><i class="icon icon-support"></i></a></li>
+                            <li><a href="#"><i class="icon icon-shopping-cart2"></i></a></li>
+                        </ul>
                         <!-- Menu -->
                         <nav id="menu" class="main-menu">
                             <ul>
@@ -155,31 +177,37 @@ if (!empty($_SESSION["foodboard-cart"])) {
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     <?php
-                                    foreach ($cartItemsArray as $cartItems) {
-                                        foreach ($cartItems as $k => $v) {
-                                            $productTitle = $cartItems[$k]["name"];
-                                            $price = $cartItems[$k]["unit_price"];
-                                    ?>
-                                            <tr class="product-title-resp">
-                                                <td class="text-left"><span class="inline-block title-width"><?php echo $productTitle; ?></span></td>
-                                                <td data-label="Price" class="table-td"><?php echo number_format($price, 2); ?></td>
-                                                <td data-label="Quantity" class="table-td"><?php echo $cartItems[$k]['quantity']; ?></td>
-                                                <td data-label="Total" class="table-td"><?php echo number_format($price * $cartItems[$k]['quantity'], 2); ?></td>
+                                    $total_price_array = [];
 
-                                            </tr>
-                                        <?php
-                                            $total_price_array[] = $price * $cartItems[$k]['quantity'];
-                                        }
+                                    foreach ($cartItemsArray as $item) {
+                                        $productTitle = $item["name"];
+                                        $price = $item["unit_price"];
+                                        $quantity = $item["quantity"];
+                                        $total = $price * $quantity;
+                                        $total_price_array[] = $total;
+                                    ?>
+                                        <tr class="product-title-resp">
+                                            <td class="text-left"><span class="inline-block title-width"><?php echo $productTitle; ?></span></td>
+                                            <td data-label="Price" class="table-td"><?php echo number_format($price, 0, ',', '.'); ?></td>
+                                            <td data-label="Quantity" class="table-td"><?php echo $quantity; ?></td>
+                                            <td data-label="Total" class="table-td"><?php echo number_format($total, 0, ',', '.'); ?></td>
+                                        </tr>
+                                    <?php
                                     }
+
                                     $sub_total_price = array_sum($total_price_array);
+
                                     if (!empty($shippingAmount)) {
                                         $total_price = $sub_total_price + $shippingAmount;
-                                        ?>
+                                    ?>
                                         <tr class="sub_total">
-                                            <td class="grand-resp" align="right" colspan="2"><strong><?php echo "Delivery Fee"; ?> (<?php echo Config::CURRENCY_SYMBOL; ?>)</strong></td>
-                                            <td data-label="Shipping Total" align="right" colspan="3"><strong><?php echo number_format($shippingAmount, 2); ?></strong></td>
+                                            <td class="grand-resp" align="right" colspan="2">
+                                                <strong><?php echo "Delivery Fee"; ?> (<?php echo Config::CURRENCY_SYMBOL; ?>)</strong>
+                                            </td>
+                                            <td data-label="Shipping Total" align="right" colspan="3">
+                                                <strong><?php echo number_format($shippingAmount, 0, ',', '.'); ?></strong>
+                                            </td>
                                         </tr>
                                     <?php
                                     } else {
@@ -187,10 +215,15 @@ if (!empty($_SESSION["foodboard-cart"])) {
                                     }
                                     ?>
                                     <tr class="sub_total">
-                                        <td class="grand-resp" align="right" colspan="2"><strong><?php echo "Grand Total"; ?> (<?php echo Config::CURRENCY_SYMBOL; ?>)</strong></td>
-                                        <td data-label="Grand Total" align="right" colspan="3"><strong><?php echo number_format($total_price, 2); ?></strong></td>
+                                        <td class="grand-resp" align="right" colspan="2">
+                                            <strong><?php echo "Grand Total"; ?> (<?php echo Config::CURRENCY_SYMBOL; ?>)</strong>
+                                        </td>
+                                        <td data-label="Grand Total" align="right" colspan="3">
+                                            <strong><?php echo number_format($total_price, 0, ',', '.'); ?></strong>
+                                        </td>
                                     </tr>
                                 </tbody>
+
                             </table>
                             <h3>Customer details:</h3>
                             <?php foreach ($customerDetailsArray as $k => $v) { ?>
@@ -207,58 +240,58 @@ if (!empty($_SESSION["foodboard-cart"])) {
         <!-- Main End -->
 
         <!-- Footer -->
-		<footer class="main-footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-3">
-						<h5 class="footer-heading">Menu Links</h5>
-						<ul class="list-unstyled nav-links">
-							<li><i class="fa fa-angle-right"></i> <a href="index.html" class="footer-link">Home</a></li>
-							<li><i class="fa fa-angle-right"></i> <a href="faq.html" class="footer-link">FAQ</a></li>
-							<li><i class="fa fa-angle-right"></i> <a href="contacts.html" class="footer-link">Contacts</a></li>
-						</ul>
-					</div>
-					<div class="col-md-3">
-						<h5 class="footer-heading">Order</h5>
-						<ul class="list-unstyled nav-links">
-							<li><i class="fa fa-angle-right"></i> <a href="pay-with-card-online/index.php" class="footer-link">Pay online</a></li>
-							<li><i class="fa fa-angle-right"></i> <a href="pay-with-cash-on-delivery/index.php" class="footer-link">Pay with cash on delivery</a></li>
-						</ul>
-					</div>
-					<div class="col-md-4">
-						<h5 class="footer-heading">Contacts</h5>
-						<ul class="list-unstyled contact-links">
-							<li><i class="icon icon-map-marker"></i><a href="https://maps.app.goo.gl/3kMUttsyy6Fy6rXi8" class="footer-link" target="_blank">Address: Stadion Singaperbangsa, Karawang, Indonesia</a></li>
-							<li><i class="icon icon-envelope3"></i><a href="mailto:tulangrangukarawang@gmail.com" class="footer-link">Mail: tulangrangukarawang@gmail.com</a></li>
-							<li><i class="icon icon-phone2"></i><a href="tel:+6285817128530" class="footer-link">Phone: +6285817128530</a></li>
-						</ul>
-					</div>
-					<div class="col-md-2">
-						<h5 class="footer-heading">Find Us On</h5>
-						<ul class="list-unstyled social-links">
-							<li><a href="https://www.facebook.com/share/18uqwzb3FC/" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a></li>
-							<li><a href="https://wa.me/6285817128530" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
-							<li><a href="https://instagram.com/tulangrangu_karawang" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a></li>
-							<li><a href="https://tiktok.com/@tulangrangu_karawangg" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a></li>
-						</ul>
-					</div>
-				</div>
-				<hr>
-				<div class="row">
-					<div class="col-md-8">
-						<ul id="subFooterLinks">
-							<li><a href="../img/kelompok2.jpg" target="_blank">With <i class="fa fa-heart pulse"></i> by Kelompok 2</a></li>
-							<li><a href="../pdf/terms.pdf" target="_blank">Terms and conditions</a></li>
-						</ul>
-					</div>
-					<div class="col-md-4">
-						<div id="copy">© 2025 Juragan Tulang Rangu Karawang
-						</div>
-					</div>
-				</div>
-			</div>
-		</footer>
-		<!-- Footer End -->
+        <footer class="main-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h5 class="footer-heading">Menu Links</h5>
+                        <ul class="list-unstyled nav-links">
+                            <li><i class="fa fa-angle-right"></i> <a href="../index.html" class="footer-link">Home</a></li>
+                            <li><i class="fa fa-angle-right"></i> <a href="../faq.html" class="footer-link">FAQ</a></li>
+                            <li><i class="fa fa-angle-right"></i> <a href="../contacts.html" class="footer-link">Contacts</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="footer-heading">Order</h5>
+                        <ul class="list-unstyled nav-links">
+                            <li><i class="fa fa-angle-right"></i> <a href="../pay-with-card-online/index.php" class="footer-link">Pay online</a></li>
+                            <li><i class="fa fa-angle-right"></i> <a href="../pay-with-cash-on-delivery/index.php" class="footer-link">Pay with cash on delivery</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="footer-heading">Contacts</h5>
+                        <ul class="list-unstyled contact-links">
+                            <li><i class="icon icon-map-marker"></i><a href="https://goo.gl/maps/vKgGyZe2JSRLDnYH6" class="footer-link" target="_blank">Address: 1234 Street Name, City Name, USA</a>
+                            </li>
+                            <li><i class="icon icon-envelope3"></i><a href="mailto:info@yourdomain.com" class="footer-link">Mail: info@yourdomain.com</a></li>
+                            <li><i class="icon icon-phone2"></i><a href="tel:+3630123456789" class="footer-link">Phone: +628123456789</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2">
+                        <h5 class="footer-heading">Find Us On</h5>
+                        <ul class="list-unstyled social-links">
+                            <li><a href="https://facebook.com" class="social-link" target="_blank"><i class="icon icon-facebook"></i></a></li>
+                            <li><a href="https://twitter.com" class="social-link" target="_blank"><i class="icon icon-twitter"></i></a></li>
+                            <li><a href="https://instagram.com" class="social-link" target="_blank"><i class="icon icon-instagram"></i></a></li>
+                            <li><a href="https://pinterest.com" class="social-link" target="_blank"><i class="icon icon-pinterest"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-8">
+                        <ul id="subFooterLinks">
+                            <li><a href="#" target="_blank">With <i class="fa fa-heart pulse"></i> by Kelompok 1</a></li>
+                            <li><a href="../pdf/terms.pdf" target="_blank">Terms and conditions</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <div id="copy">© 2025 Juragan Tulang Rangu Karawang</div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer End -->
 
     </div>
     <!-- Page End -->
