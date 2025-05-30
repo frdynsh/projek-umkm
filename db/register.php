@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sss", $username, $password, $role);
     if ($stmt->execute()) {
       echo "Registration successful!";
-      header("Location: /RPL/projek-umkm-main/db/login.php");
+      header("Location: login.php");
     } else {
       echo "Error: " . $stmt->error;
     }

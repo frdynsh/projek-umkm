@@ -6,15 +6,10 @@ use Foodboard\Config;
 
 require_once __DIR__ . '/Config/Config.php';
 
+include '../db/db.php';
 
-$conn = new mysqli('localhost', 'root', '', 'rpl_umkm');
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-$sql = "SELECT * FROM products";
+$sql = "SELECT * FROM produk";
 $result = $conn->query($sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -87,8 +82,7 @@ $result = $conn->query($sql);
                     </div>
                     <div class="col-lg-9 col-6">
                         <ul id="menuIcons">
-							<li><a href="#"><i class="fas fa-sign-in"></i></a></li>
-							<li><a href="#"><i class="fas fa-user-plus"></i></a></li>
+							<li><a href="../db/login.php"><i class="fas fa-user"></i></a></li>
 						</ul>
                         <!-- Menu -->
                         <nav id="menu" class="main-menu">
@@ -107,8 +101,6 @@ $result = $conn->query($sql);
                                 </li>
                                 <li><span><a href="../faq.html">Faq</a></span></li>
                                 <li><span><a href="../contacts.html">Contacts</a></span></li>
-
-                                <li><span><a href="/RPL/projek-umkm-main/db/login.php">Login</a></span></li>
                             </ul>
                         </nav>
                         <!-- Menu End -->
@@ -162,145 +154,39 @@ $result = $conn->query($sql);
 
 
                             <!-- 🔴 Display products -->
-                            <div class="container mt-5">
-                                <h2 class="mb-4">Our Products</h2>
-                                <div class="row">
-                                    <?php if ($result->num_rows > 0): ?>
-                                        <?php while ($row = $result->fetch_assoc()): ?>
-                                            <div class="col-md-4 mb-4">
-                                                <div class="card h-100">
-                                                    <img src="<?= htmlspecialchars($row['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($row['name']) ?>">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title"><?= htmlspecialchars($row['name']) ?></h5>
-                                                        <p class="card-text"><?= htmlspecialchars($row['description']) ?></p>
-                                                        <p class="card-text"><strong>Price: Rp <?= htmlspecialchars($row['price']) ?></strong></p>
-                                                        <p class="card-text">Stock: <?= htmlspecialchars($row['stock']) ?></p>
-                                                        <a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        <?php endwhile; ?>
-                                    <?php else: ?>
-                                        <p>No products found.</p>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-
-
-                            <!-- Grid -->
                             <div class="row grid">
-                                <!-- Grid Item 01 -->
-                                <div id="gridItem01" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item tulangrangu">
-                                    <div class="item-body">
-                                        <figure>
-                                            <img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/01.jpg" class="img-fluid lazy" alt="">
-                                            <a href="#modalDetailsItem01" class="item-body-link modal-opener">
-                                                <div class="item-title">
-                                                    <h3>Tulang Rangu</h3>
-                                                    <small>Original ...</small>
-                                                </div>
-                                            </a>
-                                            <div class="ribbon-size"><span>Size: M</span></div>
-                                        </figure>
-                                        <ul>
-                                            <li>
-                                                <a href="#modalOptionsItem01" class="item-size modal-opener">Options</a>
-                                            </li>
-                                            <li>
-                                                <span class="item-price format-price">10000</span>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- Grid Item 02 -->
-                                <div id="gridItem02" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item  dakbal">
-                                    <div class="item-body">
-                                        <figure>
-                                            <div class="ribbon-discount"><span>- 10%</span></div>
-                                            <img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/02.jpg" class="img-fluid lazy" alt="">
-                                            <a href="#modalDetailsItem02" class="item-body-link modal-opener">
-                                                <div class="item-title">
-                                                    <h3>Dakbal</h3>
-                                                    <small>Original ...</small>
-                                                </div>
-                                            </a>
-                                            <div class="ribbon-size"><span>Size: M</span></div>
-                                        </figure>
-                                        <ul>
-                                            <li>
-                                                <a href="#modalOptionsItem02" class="item-size modal-opener">Options</a>
-                                            </li>
-                                            <li>
-                                                <span class="item-price format-price">10000</span>
-                                            </li>
-                                            <li>
-                                                <span class="item-price-discount format-price">12000</span>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- Grid Item 03 -->
-                                <div id="gridItem03" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item  cekermercon">
-                                    <div class="item-body">
-                                        <figure>
-                                            <img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/03.jpg" class="img-fluid lazy" alt="">
-                                            <a href="#modalDetailsItem03" class="item-body-link modal-opener">
-                                                <small class="red">Hot</small>
-                                                <div class="item-title">
-                                                    <h3>Ceker Mercon</h3>
-                                                    <small>Original ...</small>
-                                                </div>
-                                            </a>
-                                            <div class="ribbon-size"><span>Size: M</span></div>
-                                        </figure>
-                                        <ul>
-                                            <li>
-                                                <a href="#modalOptionsItem03" class="item-size modal-opener">Options</a>
-                                            </li>
-                                            <li>
-                                                <span class="item-price format-price">10000</span>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- Grid Item 04 -->
-                                <div id="gridItem04" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item  dimsum">
-                                    <div class="item-body">
-                                        <figure>
-                                            <img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/04.jpg" class="img-fluid lazy" alt="">
-                                            <a href="#modalDetailsItem04" class="item-body-link modal-opener">
-                                                <small>News</small>
-                                                <div class="item-title">
-                                                    <h3>Dimsum Tulang Rangu</h3>
-                                                    <small>Original ...</small>
-                                                </div>
-                                            </a>
-                                            <div class="ribbon-size"><span>Size: M</span></div>
-                                        </figure>
-                                        <ul>
-                                            <li>
-                                                <a href="#modalOptionsItem04" class="item-size modal-opener">Options</a>
-                                            </li>
-                                            <li>
-                                                <span class="item-price format-price">10000</span>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <?php if ($result->num_rows > 0): ?>
+                                    <?php while ($row = $result->fetch_assoc()): ?>
+                                        <div id="gridItem<?= $row['id'] ?>" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item <?= htmlspecialchars($row['kategori']) ?>">
+                                            <div class="item-body">
+                                                <figure>
+                                                    <?php if (!empty($row['label'])): ?>
+                                                        <div class="<?= htmlspecialchars($row['label_class']) ?>"><span><?= htmlspecialchars($row['label']) ?></span></div>
+                                                    <?php endif; ?>
+                                                    <img src="../img/bg/lazy-placeholder.jpg"
+                                                        data-src="../img/gallery/grid-items/<?= htmlspecialchars($row['gambar']) ?>"
+                                                        class="img-fluid lazy" alt="<?= htmlspecialchars($row['nama']) ?>">
+                                                    <a href="#modalDetailsItem<?= $row['id'] ?>" class="item-body-link modal-opener">
+                                                        <div class="item-title">
+                                                            <h3><?= htmlspecialchars($row['nama']) ?></h3>
+                                                            <small><?= htmlspecialchars($row['deskripsi']) ?></small><br>
+                                                            <small>Stok: <?= (int)$row['stok'] ?> tersedia</small>
+                                                        </div>
+                                                    </a>
+                                                    <div class="ribbon-size"><span>Size: <?= htmlspecialchars($row['ukuran']) ?></span></div>
+                                                </figure>
+                                                <ul>
+                                                    <li><a href="#modalOptionsItem<?= $row['id'] ?>" class="item-size modal-opener">Options</a></li>
+                                                    <li><span class="item-price format-price"><?= number_format($row['harga'], 0, ',', '.') ?></span></li>
+                                                    <li><a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <p class="text-center">Produk belum tersedia.</p>
+                                <?php endif; ?>
                             </div>
-                            <!-- Grid End -->
                         </div>
                         <!-- Left Sidebar End -->
                         <!-- Right Sidebar -->
@@ -458,7 +344,6 @@ $result = $conn->query($sql);
                                         </div>
                                     </div>
                                     <!-- Step 2: Checkout End -->
-
                                 </form>
                                 <!-- Form End -->
                             </div>
@@ -571,347 +456,129 @@ $result = $conn->query($sql);
     </div>
     <!-- Modal Warning Qty max. Limit End -->
 
-    <!-- Modal Options for Item 01 -->
-    <div id="modalOptionsItem01" class="modal-popup zoom-anim-dialog mfp-hide">
-        <div class="small-dialog-header">
-            <h3>Tulang Rangu</h3>
-            <div class="addedToCartMsgInModal">Added to cart</div>
-            <div class="alreadyInCartMsgInModal">Already in cart</div>
-        </div>
-        <div class="content">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Small" name="size-options-item-01">
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Small</span><span class="option-price format-price">5000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Medium" name="size-options-item-01" checked>
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Medium</span><span class="option-price format-price">10000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Large" name="size-options-item-01">
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Large</span><span class="option-price format-price">15000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <input type="hidden" id="item01ExtraTitle" name="item01ExtraTitle" value="Extra Cheese" />
-                    <input type="checkbox" id="item01Extra" class="inp-cbx" name="item01Extra" value="3.50" />
-                    <label class="cbx mb-0" for="item01Extra">
-                        <span>
-                            <svg width="12px" height="10px" viewbox="0 0 12 10">
-                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                            </svg>
-                        </span>
-                        <span>Extra Cheese</span><span class="option-price format-price">2.00</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <!-- Content End -->
-        <div class="footer">
-            <div class="row">
-                <div class="col-4 pr-0">
-                    <button type="button" class="btn-modal-close">Close</button>
-                </div>
-                <div class="col-8">
-                    <button type="button" class="btn-modal add-options-item-to-cart">Add to Cart</button>
-                </div>
-            </div>
-        </div>
-        <!-- Footer End -->
-    </div>
-    <!-- Modal Options for Item 01 End -->
+    <!-- Modal Options -->
+    <?php
+    // Ambil semua produk
+    $sqlProduk = "SELECT * FROM produk";
+    $resultProduk = $conn->query($sqlProduk);
 
-    <!-- Modal Options for Item 02 -->
-    <div id="modalOptionsItem02" class="modal-popup zoom-anim-dialog mfp-hide">
-        <div class="small-dialog-header">
-            <h3>Dakbal</h3>
-            <div class="addedToCartMsgInModal">Added to cart</div>
-            <div class="alreadyInCartMsgInModal">Already in cart</div>
-        </div>
-        <div class="content">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Small" name="size-options-item-02">
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Small</span><span class="option-price format-price">5000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Medium" name="size-options-item-02" checked>
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Medium</span><span class="option-price format-price">10000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Large" name="size-options-item-02">
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Large</span><span class="option-price format-price">15000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <input type="hidden" id="item02ExtraTitle" name="item02ExtraTitle" value="Extra Cheese" />
-                    <input type="checkbox" id="item02Extra" class="inp-cbx" name="item02Extra" value="3.50" />
-                    <label class="cbx" for="item02Extra">
-                        <span>
-                            <svg width="12px" height="10px" viewbox="0 0 12 10">
-                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                            </svg>
-                        </span>
-                        <span>Extra Cheese</span><span class="option-price format-price">2.00</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <!-- Content End -->
-        <div class="footer">
-            <div class="row">
-                <div class="col-4 pr-0">
-                    <button type="button" class="btn-modal-close">Close</button>
-                </div>
-                <div class="col-8">
-                    <button type="button" class="btn-modal add-options-item-to-cart">Add to Cart</button>
-                </div>
-            </div>
-        </div>
-        <!-- Footer End -->
-    </div>
-    <!-- Modal Options for Item 02 End -->
+    while ($produk = $resultProduk->fetch_assoc()) {
+        $produk_id = $produk['id'];
 
-    <!-- Modal Options for Item 03 -->
-    <div id="modalOptionsItem03" class="modal-popup zoom-anim-dialog mfp-hide">
-        <div class="small-dialog-header">
-            <h3>Ceker Mercon</h3>
-            <div class="addedToCartMsgInModal">Added to cart</div>
-            <div class="alreadyInCartMsgInModal">Already in cart</div>
-        </div>
-        <div class="content">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Small" name="size-options-item-03">
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Small</span><span class="option-price format-price">5000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Medium" name="size-options-item-03" checked>
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Medium</span><span class="option-price format-price">10000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Large" name="size-options-item-03">
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Large</span><span class="option-price format-price">15000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <input type="hidden" id="item03ExtraTitle" name="item03ExtraTitle" value="Extra Cheese" />
-                    <input type="checkbox" id="item03Extra" class="inp-cbx" name="item03Extra" value="2.00" />
-                    <label class="cbx" for="item03Extra">
-                        <span>
-                            <svg width="12px" height="10px" viewbox="0 0 12 10">
-                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                            </svg>
-                        </span>
-                        <span>Extra Cheese</span><span class="option-price format-price">2.00</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <!-- Content End -->
-        <div class="footer">
-            <div class="row">
-                <div class="col-4 pr-0">
-                    <button type="button" class="btn-modal-close">Close</button>
-                </div>
-                <div class="col-8">
-                    <button type="button" class="btn-modal add-options-item-to-cart">Add to Cart</button>
-                </div>
-            </div>
-        </div>
-        <!-- Footer End -->
-    </div>
-    <!-- Modal Options for Item 03 End -->
+        // Query opsi produk
+        $sqlOptions = "SELECT * FROM produk_options WHERE produk_id = $produk_id ORDER BY type, id";
+        $resultOptions = $conn->query($sqlOptions);
 
-    <!-- Modal Options for Item 04 -->
-    <div id="modalOptionsItem04" class="modal-popup zoom-anim-dialog mfp-hide">
-        <div class="small-dialog-header">
-            <h3>Dimsum Tulan Rangu</h3>
-            <div class="addedToCartMsgInModal">Added to cart</div>
-            <div class="alreadyInCartMsgInModal">Already in cart</div>
-        </div>
-        <div class="content">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Small" name="size-options-item-04">
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Small</span><span class="option-price format-price">5000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Medium" name="size-options-item-04" checked>
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Medium</span><span class="option-price format-price">10000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <label class="cbx radio-wrapper">
-                        <input type="radio" value="Large" name="size-options-item-04">
-                        <span class="checkmark"></span>
-                        <span class="radio-caption">Large</span><span class="option-price format-price">15000</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <input type="hidden" id="item04ExtraTitle" name="item04ExtraTitle" value="Extra Cheese" />
-                    <input type="checkbox" id="item04Extra" class="inp-cbx" name="item04Extra" value="2.00" />
-                    <label class="cbx" for="item04Extra">
-                        <span>
-                            <svg width="12px" height="10px" viewbox="0 0 12 10">
-                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                            </svg>
-                        </span>
-                        <span>Extra Cheese</span><span class="option-price format-price">2.00</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <!-- Content End -->
-        <div class="footer">
-            <div class="row">
-                <div class="col-4 pr-0">
-                    <button type="button" class="btn-modal-close">Close</button>
-                </div>
-                <div class="col-8">
-                    <button type="button" class="btn-modal add-options-item-to-cart">Add to Cart</button>
-                </div>
-            </div>
-        </div>
-        <!-- Footer End -->
-    </div>
-    <!-- Modal Options for Item 04 End -->
+        // Pisahkan opsi size dan extra untuk mudah generate HTML
+        $sizeOptions = [];
+        $extraOptions = [];
 
-    <!-- Modal Details for Item 01 -->
-    <div id="modalDetailsItem01" class="modal-popup zoom-anim-dialog mfp-hide">
-        <div class="small-dialog-header">
-            <h3>Tulang Rangu</h3>
+        while ($option = $resultOptions->fetch_assoc()) {
+            if ($option['type'] === 'size') {
+                $sizeOptions[] = $option;
+            } elseif ($option['type'] === 'extra') {
+                $extraOptions[] = $option;
+            }
+        }
+        ?>
+
+        <div id="modalOptionsItem<?= $produk_id ?>" class="modal-popup zoom-anim-dialog mfp-hide">
+            <div class="small-dialog-header">
+                <h3><?= htmlspecialchars($produk['nama']) ?></h3>
+                <div class="addedToCartMsgInModal">Added to cart</div>
+                <div class="alreadyInCartMsgInModal">Already in cart</div>
+            </div>
+            <div class="content">
+
+                <!-- Opsi Size (radio) -->
+                <?php foreach ($sizeOptions as $index => $size): ?>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <label class="cbx radio-wrapper">
+                                <input 
+                                    type="radio" 
+                                    value="<?= htmlspecialchars($size['label']) ?>" 
+                                    name="size-options-item-<?= $produk_id ?>" 
+                                    <?= $size['is_default'] ? 'checked' : '' ?>>
+                                <span class="checkmark"></span>
+                                <span class="radio-caption"><?= htmlspecialchars($size['label']) ?></span>
+                                <span class="option-price format-price"><?= number_format($size['harga'], 0, ',', '.') ?></span>
+                            </label>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+
+                <!-- Opsi Extra (checkbox) -->
+                <?php foreach ($extraOptions as $extra): ?>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <input 
+                                type="checkbox" 
+                                id="item<?= $produk_id ?>Extra<?= $extra['id'] ?>" 
+                                class="inp-cbx" 
+                                name="item<?= $produk_id ?>Extra" 
+                                value="<?= htmlspecialchars($extra['harga']) ?>" />
+                            <label class="cbx mb-0" for="item<?= $produk_id ?>Extra<?= $extra['id'] ?>">
+                                <span>
+                                    <svg width="12px" height="10px" viewbox="0 0 12 10">
+                                        <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                                    </svg>
+                                </span>
+                                <span><?= htmlspecialchars($extra['label']) ?></span>
+                                <span class="option-price format-price"><?= number_format($extra['harga'], 0, ',', '.') ?></span>
+                            </label>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+
+            </div>
+
+            <!-- Content End -->
+            <div class="footer">
+                <div class="row">
+                    <div class="col-4 pr-0">
+                        <button type="button" class="btn-modal-close">Close</button>
+                    </div>
+                    <div class="col-8">
+                        <button type="button" class="btn-modal add-options-item-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End -->
         </div>
-        <div class="content pb-1">
-            <figure><img src="../img/gallery/grid-items-large/01.jpg" alt="" class="img-fluid"></figure>
-            <h6 class="mb-1">Varian</h6>
-            <p>Original, Chili oil, Sambal Hijau</p>
-        </div>
-        <div class="footer">
-            <div class="row">
-                <div class="col-4 pr-0">
-                    <button type="button" class="btn-modal-close">Close</button>
+    <?php
+    } // end while produk
+    ?>
+    <!-- Modal Options End -->
+
+    <!-- Modal Details-->
+    <?php
+        // Reset ulang pointer data
+        $result->data_seek(0);
+        while ($row = $result->fetch_assoc()):
+    ?>
+        <!-- Modal Details for Item <?= $row['id'] ?> -->
+        <div id="modalDetailsItem<?= $row['id'] ?>" class="modal-popup zoom-anim-dialog mfp-hide">
+            <div class="small-dialog-header">
+                <h3><?= htmlspecialchars($row['nama']) ?></h3>
+            </div>
+            <div class="content pb-1">
+                <figure>
+                    <img src="../img/gallery/grid-items-large/<?= htmlspecialchars($row['gambar']) ?>" alt="<?= htmlspecialchars($row['nama']) ?>" class="img-fluid">
+                </figure>
+                <h6 class="mb-1">Varian</h6>
+                <p>Original, Chili oil, Sambal Hijau</p>
+            </div>
+            <div class="footer">
+                <div class="row">
+                    <div class="col-4 pr-0">
+                        <button type="button" class="btn-modal-close">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Modal Details for Item 1 End -->
-
-    <!-- Modal Details for Item 02 -->
-    <div id="modalDetailsItem02" class="modal-popup zoom-anim-dialog mfp-hide">
-        <div class="small-dialog-header">
-            <h3>Dakbal</h3>
-        </div>
-        <div class="content pb-1">
-            <figure><img src="../img/gallery/grid-items-large/02.jpg" alt="" class="img-fluid"></figure>
-            <h6 class="mb-1">Varian</h6>
-            <p>Original, Chili oil, Sambal Hijau</p>
-        </div>
-        <div class="footer">
-            <div class="row">
-                <div class="col-4 pr-0">
-                    <button type="button" class="btn-modal-close">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal Details for Item 02 End -->
-
-    <!-- Modal Details for Item 03 -->
-    <div id="modalDetailsItem03" class="modal-popup zoom-anim-dialog mfp-hide">
-        <div class="small-dialog-header">
-            <h3>Ceker Mercon</h3>
-        </div>
-        <div class="content pb-1">
-            <figure><img src="../img/gallery/grid-items-large/03.jpg" alt="" class="img-fluid"></figure>
-            <h6 class="mb-1">Varian</h6>
-            <p>Original, Chili oil, Sambal Hijau</p>
-        </div>
-        <div class="footer">
-            <div class="row">
-                <div class="col-4 pr-0">
-                    <button type="button" class="btn-modal-close">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal Details for Item 03 End -->
-
-    <!-- Modal Details for Item 04 -->
-    <div id="modalDetailsItem04" class="modal-popup zoom-anim-dialog mfp-hide">
-        <div class="small-dialog-header">
-            <h3>Dimsum Tulan Rangu</h3>
-        </div>
-        <div class="content pb-1">
-            <figure><img src="../img/gallery/grid-items-large/04.jpg" alt="" class="img-fluid"></figure>
-            <h6 class="mb-1">Varian</h6>
-            <p>Original, Chili oil, Sambal Hijau</p>
-        </div>
-        <div class="footer">
-            <div class="row">
-                <div class="col-4 pr-0">
-                    <button type="button" class="btn-modal-close">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal Details for Item 04 End -->
-
-    
+    <?php endwhile; ?>
+    <!-- Modal Details-->
 
     <!-- Back to top button -->
     <div id="toTop">

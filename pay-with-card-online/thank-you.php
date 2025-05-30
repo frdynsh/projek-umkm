@@ -98,7 +98,7 @@ if (!empty($_SESSION["foodboard-cart"])) {
                         <ul id="menuIcons">
 							<li><a href="#"><i class="fas fa-sign-in"></i></a></li>
 							<li><a href="#"><i class="fas fa-user-plus"></i></a></li>
-						</ul>                    
+						</ul>
                         <!-- Menu -->
                         <nav id="menu" class="main-menu">
                             <ul>
@@ -107,7 +107,7 @@ if (!empty($_SESSION["foodboard-cart"])) {
                                     <span><a href="#">Order <i class="fa fa-chevron-down"></i></a></span>
                                     <ul>
                                         <li>
-                                            <a href="../pay-with-card-online/index.php">Pay online</a>                                            
+                                            <a href="../pay-with-card-online/index.php">Pay online</a>
                                         </li>
                                         <li>
                                             <a href="../pay-with-cash-on-delivery/index.php">Pay with cash</a>

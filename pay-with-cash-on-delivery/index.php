@@ -4,15 +4,6 @@ use Foodboard\Config;
 
 require_once __DIR__ . '/Config/Config.php';
 
-$conn = new mysqli('localhost', 'root', '', 'rpl_umkm');
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-$sql = "SELECT * FROM products";
-$result = $conn->query($sql);
-
-
 ?>
 
 <!DOCTYPE html>
@@ -54,12 +45,6 @@ $result = $conn->query($sql);
 
 <body>
 
-
-	<?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-        <a href="db/admin.php" class="btn btn-danger">Manage Products (Admin)</a>
-        <?php endif; ?>
-
-
 	<!-- Preloader -->
 	<div id="preloader">
 		<div data-loader="circle-side"></div>
@@ -87,8 +72,7 @@ $result = $conn->query($sql);
 					</div>
 					<div class="col-lg-9 col-6">
 						<ul id="menuIcons">
-							<li><a href="#"><i class="fas fa-sign-in"></i></a></li>
-							<li><a href="#"><i class="fas fa-user-plus"></i></a></li>
+							<li><a href="../db/login.php"><i class="fas fa-user"></i></a></li>
 						</ul>
 						<!-- Menu -->
 						<nav id="menu" class="main-menu">
@@ -98,18 +82,15 @@ $result = $conn->query($sql);
 									<span><a href="#">Order <i class="fa fa-chevron-down"></i></a></span>
 									<ul>
 										<li>
-											<a href="../pay-with-card-online/index.php">Pay online</a>											
+											<a href="../pay-with-card-online/index.php">Pay online</a>
 										</li>
 										<li>
-											<a href="../pay-with-cash-on-delivery/index.php">Pay with cash</a>								
+											<a href="../pay-with-cash-on-delivery/index.php">Pay with cash</a>
 										</li>
 									</ul>
 								</li>
 								<li><span><a href="../faq.html">Faq</a></span></li>
 								<li><span><a href="../contacts.html">Contacts</a></span></li>
-
-								<li><span><a href="/RPL/projek-umkm-main/db/login.php">Login</a></span></li>
-
 							</ul>
 						</nav>
 						<!-- Menu End -->
@@ -163,30 +144,6 @@ $result = $conn->query($sql);
 
 
 							 <!-- 🔴 Display products -->
-							<div class="container mt-5">
-                                <h2 class="mb-4">Our Products</h2>
-                                <div class="row">
-                                    <?php if ($result->num_rows > 0): ?>
-                                        <?php while ($row = $result->fetch_assoc()): ?>
-                                            <div class="col-md-4 mb-4">
-                                                <div class="card h-100">
-                                                    <img src="<?= htmlspecialchars($row['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($row['name']) ?>">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title"><?= htmlspecialchars($row['name']) ?></h5>
-                                                        <p class="card-text"><?= htmlspecialchars($row['description']) ?></p>
-                                                        <p class="card-text"><strong>Price: Rp <?= htmlspecialchars($row['price']) ?></strong></p>
-                                                        <p class="card-text">Stock: <?= htmlspecialchars($row['stock']) ?></p>
-                                                        <a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        <?php endwhile; ?>
-                                    <?php else: ?>
-                                        <p>No products found.</p>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-
 
 							<!-- Grid -->
 							<div class="row grid">

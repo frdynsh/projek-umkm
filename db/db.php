@@ -1,12 +1,12 @@
 <?php
-$servername = "localhost";
-$username = "root";  // your DB username
-$password = "";      // your DB password
-$dbname = "rpl_umkm";
+$host = 'localhost';
+$user = 'root';
+$pass = '';
+$dbname = 'rpl_umkm'; // ganti sesuai nama database kamu
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($host, $user, $pass, $dbname);
 
 if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+    die("Koneksi gagal: " . $conn->connect_error);
 }
 ?>
