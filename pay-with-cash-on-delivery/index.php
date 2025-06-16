@@ -461,14 +461,14 @@ require_once __DIR__ . '/Config/Config.php';
 						<h5 class="footer-heading">Contacts</h5>
 						<ul class="list-unstyled contact-links">
 							<li><i class="icon icon-map-marker"></i><a href="https://maps.app.goo.gl/3kMUttsyy6Fy6rXi8" class="footer-link" target="_blank">Address: Stadion Singaperbangsa, Karawang</a></li>
-							<li><i class="icon icon-envelope3"></i><a href="mailto:frdynsh11@gmail.com" class="footer-link">Mail: frdynsh11@gmail.com</a></li>
+							<li><i class="icon icon-envelope3"></i><a href="mailto:tulangrangukarawang@gmail.com" class="footer-link">Mail: tulangrangukarawang@gmail.com</a></li>
 							<li><i class="icon icon-phone2"></i><a href="tel:+6285817128530" class="footer-link">Phone: +6285817128530</a></li>
 						</ul>
 					</div>
 					<div class="col-md-2">
 						<h5 class="footer-heading">Find Us On</h5>
 						<ul class="list-unstyled social-links">
-							<li><a href="https://facebook.com/ferdi.yansah.180072" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a></li>
+							<li><a href="https://www.facebook.com/share/18uqwzb3FC/" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a></li>
 							<li><a href="https://wa.me/6285817128530" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
 							<li><a href="https://instagram.com/tulangrangu_karawang" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a></li>
 							<li><a href="https://tiktok.com/@tulangrangu_karawangg" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a></li>
