@@ -82,7 +82,7 @@
 	/* Footer
 	==================================== */
 	footer #copy {
-		text-align: left;
+		text-align: left !important;
 		margin-bottom: 25px;
 	}
 	footer ul li {
@@ -192,3 +192,4 @@
 		width: 100px;
 	}
 }
+
