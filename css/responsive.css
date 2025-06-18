@@ -3,6 +3,9 @@
 		width: 250px;
 		font-size: 1.3rem;
 	}
+	.hero-home {
+		padding-top: 50px;
+	}
 	.hero-home .content h1 {
 		font-size: 1.8rem;
 	}

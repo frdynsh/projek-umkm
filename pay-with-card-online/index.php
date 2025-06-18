@@ -215,11 +215,17 @@ $result = $conn->query($sql);
                                             <!-- Cart Items End -->
                                             <!-- Delivery Fee -->
                                             <div class="row">
+                                                <!-- Option Delivery -->
                                                 <div class="col-md-12 col-sm-12">
                                                     <label class="cbx radio-wrapper no-edges">
                                                         <input type="radio" value="delivery" name="transfer" checked> <span class="checkmark"></span>
                                                         <span class="radio-caption">Delivery</span><span class="option-price format-price transfer">10000</span>
                                                     </label>
+                                                    <!-- Option Take Away -->
+													<label class="cbx radio-wrapper no-edges">
+														<input type="radio" value="take away" name="transfer" checked><span class="checkmark"></span>
+														<span class="radio-caption">Take Away</span><span class="option-price format-price transfer">0.00</span>
+													</label>
                                                 </div>
                                             </div>
                                             <!-- Delivery Fee -->
