@@ -76,7 +76,7 @@
 	/* Banner
 	==================================== */
 	.banner .textbox {
-		padding: 60px;
+		padding: 60px !important;
 		text-align: center;
 	}
 	/* Footer
