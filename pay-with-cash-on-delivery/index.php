@@ -4,11 +4,6 @@ use Foodboard\Config;
 
 require_once __DIR__ . '/Config/Config.php';
 
-include '../db/db.php'; // sesuaikan path
-
-$sql = "SELECT * FROM products";
-$result = $conn->query($sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -77,7 +72,8 @@ $result = $conn->query($sql);
 					</div>
 					<div class="col-lg-9 col-6">
 						<ul id="menuIcons">
-							<li><a href="../db/login.php"><i class="fas fa-user"></i></a></li>
+							<li><a href="#"><i class="fas fa-sign-in"></i></a></li>
+							<li><a href="#"><i class="fas fa-user-plus"></i></a></li>
 						</ul>
 						<!-- Menu -->
 						<nav id="menu" class="main-menu">
@@ -87,10 +83,10 @@ $result = $conn->query($sql);
 									<span><a href="#">Order <i class="fa fa-chevron-down"></i></a></span>
 									<ul>
 										<li>
-											<a href="../pay-with-card-online/index.php">Pay online</a>
+											<a href="../pay-with-card-online/index.php">Pay online</a>											
 										</li>
 										<li>
-											<a href="../pay-with-cash-on-delivery/index.php">Pay with cash</a>
+											<a href="../pay-with-cash-on-delivery/index.php">Pay with cash</a>								
 										</li>
 									</ul>
 								</li>
@@ -146,59 +142,71 @@ $result = $conn->query($sql);
 								</div>
 							</div>
 							<!-- Filter Area End -->
-
-
-							 <!-- 🔴 Display products -->
-
 							<!-- Grid -->
 							<div class="row grid">
-  <?php
-  $sql = "SELECT p.id, p.name, p.description, p.image_path, p.label, po.name AS size, po.price 
-          FROM products p 
-          LEFT JOIN product_options po ON p.id = po.product_id 
-          ORDER BY p.created_at DESC";
-  $result = $conn->query($sql);
-  if ($result->num_rows > 0):
-    $counter = 1;
-    while ($row = $result->fetch_assoc()):
-      $productId = $row['id'];
-      $name = htmlspecialchars($row['name']);
-      $desc = htmlspecialchars($row['description']);
-      $img = htmlspecialchars($row['image_path']);
-      $label = htmlspecialchars($row['label']);
-      $size = htmlspecialchars($row['size']);
-      $price = number_format($row['price'], 0, ',', '.');
-      $labelClass = ''; // Sesuaikan jika ada label class (opsional)
-  ?>
-  <div id="gridItem<?= sprintf("%02d", $counter) ?>" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item <?= strtolower(preg_replace('/\s+/', '', $name)) ?>">
+<?php
+include 'db/db.php';
+
+// Ambil semua produk dan satu opsi pertama (jika ada)
+$sql = "
+SELECT 
+    p.id, p.name, p.description, p.image_path, p.label, p.stock,
+    (SELECT name FROM product_options WHERE product_id = p.id LIMIT 1) as option_name,
+    (SELECT price FROM product_options WHERE product_id = p.id LIMIT 1) as price
+FROM products p
+ORDER BY p.created_at DESC
+";
+
+$result = $conn->query($sql);
+$index = 1;
+
+if ($result && $result->num_rows > 0):
+  while ($row = $result->fetch_assoc()):
+    $id = $row['id'];
+    $name = htmlspecialchars($row['name']);
+    $desc = htmlspecialchars($row['description']);
+    $image = htmlspecialchars($row['image_path']);
+    $label = htmlspecialchars($row['label']);
+    $stock = (int)$row['stock'];
+    $size = htmlspecialchars($row['option_name'] ?? 'M');
+    $price = number_format((int)($row['price'] ?? 0), 0, ',', '.');
+    $slug = strtolower(preg_replace('/\s+/', '', $name));
+?>
+  <div id="gridItem<?= str_pad($index, 2, '0', STR_PAD_LEFT) ?>" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item <?= $slug ?>">
     <div class="item-body">
       <figure>
         <?php if (!empty($label)): ?>
-          <div class="ribbon-discount"><span><?= $label ?></span></div>
+          <small class="red"><?= $label ?></small>
         <?php endif; ?>
-        <img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/<?= $img ?>" class="img-fluid lazy" alt="<?= $name ?>">
-        <a href="#modalDetailsItem<?= $productId ?>" class="item-body-link modal-opener">
+        <img src="../img/bg/lazy-placeholder.jpg" data-src="uploads/<?= $image ?>" class="img-fluid lazy" alt="<?= $name ?>">
+        <a href="#modalDetailsItem<?= $id ?>" class="item-body-link modal-opener">
           <div class="item-title">
             <h3><?= $name ?></h3>
             <small><?= $desc ?></small>
           </div>
         </a>
-        <div class="ribbon-size"><span>Size: <?= $size ?: 'Default' ?></span></div>
+        <div class="ribbon-size"><span>Size: <?= $size ?></span></div>
       </figure>
       <ul>
-        <li><a href="#modalOptionsItem<?= $productId ?>" class="item-size modal-opener">Options</a></li>
-        <li><span class="item-price format-price"><?= $price ?></span></li>
-        <li><a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a></li>
+        <li>
+          <a href="#modalOptionsItem<?= $id ?>" class="item-size modal-opener">Options</a>
+        </li>
+        <li>
+          <span class="item-price format-price"><?= $price ?></span>
+        </li>
+        <li>
+          <a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
+        </li>
       </ul>
     </div>
   </div>
-  <?php
-      $counter++;
-    endwhile;
-  else:
-  ?>
-    <p class="text-center">Produk belum tersedia.</p>
-  <?php endif; ?>
+<?php
+    $index++;
+  endwhile;
+else:
+  echo "<p class='text-center'>Produk belum tersedia.</p>";
+endif;
+?>
 </div>
 
 							<!-- Grid End -->
@@ -237,11 +245,10 @@ $result = $conn->query($sql);
 														<input type="radio" value="delivery" name="transfer" checked><span class="checkmark"></span>
 														<span class="radio-caption">Delivery Fee</span><span class="option-price format-price transfer">10000</span>
 													</label>
-
 													<!-- Option Take Away -->
 													<label class="cbx radio-wrapper no-edges">
 														<input type="radio" value="take away" name="transfer" checked><span class="checkmark"></span>
-														<span class="radio-caption">Take Away</span><span class="option-price format-price transfer">0.00</span>
+														<span class="radio-caption">Take Away</span><span class="option-price format-price transfer">0</span>
 													</label>
 												</div>
 											</div>
@@ -249,7 +256,7 @@ $result = $conn->query($sql);
 											<!-- Total -->
 											<div class="row total-container">
 												<div class="col-md-12 p-0">
-													<span class="totalTitle">Total</span><span class="totalValue format-price float-right">0.00</span>
+													<span class="totalTitle">Total</span><span class="totalValue format-price float-right">0</span>
 													<input type="hidden" id="totalOrderSummary" class="total format-price" name="total" value="" data-parsley-errors-container="#totalError" data-parsley-empty-order="" disabled />
 												</div>
 											</div>
@@ -318,7 +325,7 @@ $result = $conn->query($sql);
 												</div>
 												<div class="row total-container">
 													<div class="col-md-12 p-0">
-														<span class="totalTitle">Total</span><span class="totalValue format-price float-right">0.00</span>
+														<span class="totalTitle">Total</span><span class="totalValue format-price float-right">0</span>
 													</div>
 												</div>
 												<div class="row">
@@ -403,7 +410,7 @@ $result = $conn->query($sql);
 					<div class="col-md-4">
 						<h5 class="footer-heading">Contacts</h5>
 						<ul class="list-unstyled contact-links">
-							<li><i class="icon icon-map-marker"></i><a href="https://maps.app.goo.gl/3kMUttsyy6Fy6rXi8" class="footer-link" target="_blank">Address: Stadion Singaperbangsa, Karawang</a></li>
+							<li><i class="icon icon-map-marker"></i><a href="https://maps.app.goo.gl/3kMUttsyy6Fy6rXi8" class="footer-link" target="_blank">Address: Stadion Singaperbangsa, Karawang, Indonesia</a></li>
 							<li><i class="icon icon-envelope3"></i><a href="mailto:tulangrangukarawang@gmail.com" class="footer-link">Mail: tulangrangukarawang@gmail.com</a></li>
 							<li><i class="icon icon-phone2"></i><a href="tel:+6285817128530" class="footer-link">Phone: +6285817128530</a></li>
 						</ul>
@@ -422,8 +429,8 @@ $result = $conn->query($sql);
 				<div class="row">
 					<div class="col-md-8">
 						<ul id="subFooterLinks">
-							<li><a href="img/kelompok2.jpg" target="_blank">With <i class="fa fa-heart pulse"></i> by Kelompok 2</a></li>
-							<li><a href="pdf/terms.pdf" target="_blank">Terms and conditions</a></li>
+							<li><a href="../img/kelompok2.jpg" target="_blank">With <i class="fa fa-heart pulse"></i> by Kelompok 2</a></li>
+							<li><a href="../pdf/terms.pdf" target="_blank">Terms and conditions</a></li>
 						</ul>
 					</div>
 					<div class="col-md-4">
@@ -516,14 +523,14 @@ $result = $conn->query($sql);
 			<div class="row">
 				<div class="col-md-12 col-sm-12">
 					<input type="hidden" id="item01ExtraTitle" name="item01ExtraTitle" value="Extra Cheese" />
-					<input type="checkbox" id="item01Extra" class="inp-cbx" name="item01Extra" value="3.50" />
+					<input type="checkbox" id="item01Extra" class="inp-cbx" name="item01Extra" value="2000" />
 					<label class="cbx mb-0" for="item01Extra">
 						<span>
 							<svg width="12px" height="10px" viewbox="0 0 12 10">
 								<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 							</svg>
 						</span>
-						<span>Extra Cheese</span><span class="option-price format-price">2.00</span>
+						<span>Extra Cheese</span><span class="option-price format-price">2000</span>
 					</label>
 				</div>
 			</div>
@@ -581,14 +588,14 @@ $result = $conn->query($sql);
 			<div class="row">
 				<div class="col-md-12 col-sm-12">
 					<input type="hidden" id="item02ExtraTitle" name="item02ExtraTitle" value="Extra Cheese" />
-					<input type="checkbox" id="item02Extra" class="inp-cbx" name="item02Extra" value="3.50" />
+					<input type="checkbox" id="item02Extra" class="inp-cbx" name="item02Extra" value="2000" />
 					<label class="cbx" for="item02Extra">
 						<span>
 							<svg width="12px" height="10px" viewbox="0 0 12 10">
 								<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 							</svg>
 						</span>
-						<span>Extra Cheese</span><span class="option-price format-price">2.00</span>
+						<span>Extra Cheese</span><span class="option-price format-price">2000</span>
 					</label>
 				</div>
 			</div>
@@ -646,14 +653,14 @@ $result = $conn->query($sql);
 			<div class="row">
 				<div class="col-md-12 col-sm-12">
 					<input type="hidden" id="item03ExtraTitle" name="item03ExtraTitle" value="Extra Cheese" />
-					<input type="checkbox" id="item03Extra" class="inp-cbx" name="item03Extra" value="2.00" />
+					<input type="checkbox" id="item03Extra" class="inp-cbx" name="item03Extra" value="2000" />
 					<label class="cbx" for="item03Extra">
 						<span>
 							<svg width="12px" height="10px" viewbox="0 0 12 10">
 								<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 							</svg>
 						</span>
-						<span>Extra Cheese</span><span class="option-price format-price">2.00</span>
+						<span>Extra Cheese</span><span class="option-price format-price">2000</span>
 					</label>
 				</div>
 			</div>
@@ -711,7 +718,7 @@ $result = $conn->query($sql);
 			<div class="row">
 				<div class="col-md-12 col-sm-12">
 					<input type="hidden" id="item04ExtraTitle" name="item04ExtraTitle" value="Extra Cheese" />
-					<input type="checkbox" id="item04Extra" class="inp-cbx" name="item04Extra" value="2.00" />
+					<input type="checkbox" id="item04Extra" class="inp-cbx" name="item04Extra" value="2000" />
 					<label class="cbx" for="item04Extra">
 						<span>
 							<svg width="12px" height="10px" viewbox="0 0 12 10">
