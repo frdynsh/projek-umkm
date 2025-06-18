@@ -6,6 +6,8 @@ $type = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $username = $_POST['username'];
+  $address = $_POST['address'];
+  $phone = $_POST['phone'];
   $email = $_POST['email'];
   $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
   $role = 'admin';
@@ -20,8 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $type = "error";
   } else {
     $stmt->close();
-    $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $username, $email, $password, $role);
+    $stmt = $conn->prepare("INSERT INTO users (username, address, phone, email, password, role) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $username, $address, $phone, $email, $password, $role);
     if ($stmt->execute()) {
       $message = "Registration successful!";
       $type = "success";
@@ -45,15 +47,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="Guide to ordering food with online payment">
-	<meta name="author" content="UWS">
-  <title>SignUp - Juragan Tulang Rangu Karawang</title>
-
-  <!-- Favicon -->
+	<title>SignUp - Juragan Tulang Rangu Karawang</title>
   <link href="../img/logo.svg" rel="shortcut icon">
-
-  <!-- Font Awesome CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap">
   <style>
     * {
       margin: 0;
@@ -70,23 +66,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     .form-section {
       width: 100%;
-      height: 100vh;
+      min-height: 100vh; /* biar tinggi menyesuaikan isi */
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 20px;
+      align-items: flex-start; /* dari center ke atas */
+      padding: 80px 20px 40px; /* atas 80px, samping 20px, bawah 40px */
       background-color: transparent;
     }
 
     .form-wrapper {
       position: relative;
-      border-radius: 4px;
-      padding: 50px 40px;
+      border-radius: 8px;
+      padding: 40px 30px;
       width: 100%;
       max-width: 450px;
-      height: 620px;
       background: rgba(0, 0, 0, 0.75);
-      box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
 
     .form-wrapper h2 {
@@ -104,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       position: relative;
       margin-bottom: 20px;
     }
-    
+
     .form-control input {
       height: 100%;
       width: 100%;
@@ -114,9 +109,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       border-radius: 4px;
       color: #fff;
       font-size: 1rem;
-      padding: 0 20px;
+      padding: 14px 20px 0;
     }
-    
+
     .form-control label {
       position: absolute;
       left: 20px;
@@ -127,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       transition: all 0.1s ease;
       pointer-events: none;
     }
-    
+
     .form-control input:focus + label,
     .form-control input:valid + label {
       font-size: 0.75rem;
@@ -229,7 +224,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
       <div class="form-control">
         <input type="password" name="password" id="password" required>
-        <label for="password">New Password</label>
+        <label for="password">Password</label>
+      </div>
+      <div class="form-control">
+        <input type="password" name="confirm_password" id="confirm_password" required>
+        <label for="confirm_password">Confirm Password</label>
       </div>
       <button type="submit">Sign Up</button>
     </form>
@@ -240,4 +239,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
-
