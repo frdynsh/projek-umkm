@@ -2,29 +2,68 @@
 session_start();
 include 'db.php';
 
-$error = ""; // Tambahkan ini untuk menangkap error
+$error = "";
+$success = "";
 
+// ==== Cek Remember Me ====
+if (!isset($_SESSION['user']) && isset($_COOKIE['remember_token'])) {
+  $token = $_COOKIE['remember_token'];
+  $stmt = $conn->prepare("SELECT id, username, role FROM users WHERE remember_token=?");
+  $stmt->bind_param("s", $token);
+  $stmt->execute();
+  $stmt->store_result();
+
+  if ($stmt->num_rows === 1) {
+    $stmt->bind_result($id, $username, $role);
+    $stmt->fetch();
+
+    $_SESSION['user'] = [
+      'id' => $id,
+      'username' => $username,
+      'role' => $role
+    ];
+
+    $redirect = ($role === 'customer') ? 'index.html' : 'admin.php';
+    header("Location: $redirect");
+    exit();
+  }
+}
+
+// ==== Proses Login ====
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $username = $_POST['username'];
+  $username = trim(htmlspecialchars($_POST['username']));
   $password = $_POST['password'];
 
-  $stmt = $conn->prepare("SELECT id, password, role FROM users WHERE username=?");
+  $stmt = $conn->prepare("SELECT id, username, password, role FROM users WHERE username=?");
   $stmt->bind_param("s", $username);
   $stmt->execute();
   $stmt->store_result();
 
-  if ($stmt->num_rows == 1) {
-    $stmt->bind_result($id, $hashed_password, $role);
+  if ($stmt->num_rows === 1) {
+    $stmt->bind_result($id, $username_db, $hashed_password, $role);
     $stmt->fetch();
 
     if (password_verify($password, $hashed_password)) {
-      $_SESSION['user_id'] = $id;
-      $_SESSION['username'] = $username;
-      $_SESSION['role'] = $role;
+      $_SESSION['user'] = [
+        'id' => $id,
+        'username' => $username_db,
+        'role' => $role
+      ];
+
+      if (isset($_POST['remember_me'])) {
+        $token = bin2hex(random_bytes(32));
+        setcookie('remember_token', $token, time() + (86400 * 30), "/");
+
+        $update = $conn->prepare("UPDATE users SET remember_token=? WHERE id=?");
+        $update->bind_param("ss", $token, $id);
+        $update->execute();
+      }
+
       $success = "Login berhasil! Mengarahkan ke dashboard...";
+      $redirect = ($role === 'customer') ? 'index.html' : '../admin/views/view_add_product.php';
       echo "<script>
         setTimeout(function() {
-          window.location.href = 'admin.php';
+          window.location.href = '$redirect';
         }, 2000);
       </script>";
       exit();
@@ -34,8 +73,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   } else {
     $error = "User tidak ditemukan.";
   }
-
-  $stmt->close();
 }
 ?>
 
@@ -251,7 +288,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <button type="submit">Sign In</button>
     <div class="form-help">
       <div class="remember-me">
-        <input type="checkbox" id="remember-me">
+        <input type="checkbox" id="remember-me" name="remember_me">
         <label for="remember-me">Remember me</label>
       </div>
       <a href="#">Need help?</a>

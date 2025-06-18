@@ -4,6 +4,11 @@ use Foodboard\Config;
 
 require_once __DIR__ . '/Config/Config.php';
 
+include '../db/db.php'; // sesuaikan path
+
+$sql = "SELECT * FROM products";
+$result = $conn->query($sql);
+
 ?>
 
 <!DOCTYPE html>
@@ -147,117 +152,55 @@ require_once __DIR__ . '/Config/Config.php';
 
 							<!-- Grid -->
 							<div class="row grid">
-								<!-- Grid Item 01 -->
-								<div id="gridItem01" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item tulangrangu">
-									<div class="item-body">
-										<figure>
-											<img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/01.jpg" class="img-fluid lazy" alt="">
-											<a href="#modalDetailsItem01" class="item-body-link modal-opener">
-												<div class="item-title">
-													<h3>Tulang Rangu</h3>
-													<small>Original ...</small>
-												</div>
-											</a>
-											<div class="ribbon-size"><span>Size: M</span></div>
-										</figure>
-										<ul>
-											<li>
-												<a href="#modalOptionsItem01" class="item-size modal-opener">Options</a>
-											</li>
-											<li>
-												<span class="item-price format-price">10000</span>
-											</li>
-											<li>
-												<a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<!-- Grid Item 02 -->
-								<div id="gridItem02" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item  dakbal">
-									<div class="item-body">
-										<figure>
-											<div class="ribbon-discount"><span>- 10%</span></div>
-											<img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/02.jpg" class="img-fluid lazy" alt="">
-											<a href="#modalDetailsItem02" class="item-body-link modal-opener">
-												<div class="item-title">
-													<h3>Dakbal</h3>
-													<small>Original ...</small>
-												</div>
-											</a>
-											<div class="ribbon-size"><span>Size: M</span></div>
-										</figure>
-										<ul>
-											<li>
-												<a href="#modalOptionsItem02" class="item-size modal-opener">Options</a>
-											</li>
-											<li>
-												<span class="item-price format-price">10000</span>
-											</li>
-											<li>
-												<span class="item-price-discount format-price">12000</span>
-											</li>
-											<li>
-												<a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<!-- Grid Item 03 -->
-								<div id="gridItem03" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item  cekermercon">
-									<div class="item-body">
-										<figure>
-											<img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/03.jpg" class="img-fluid lazy" alt="">
-											<a href="#modalDetailsItem03" class="item-body-link modal-opener">
-												<small class="red">Hot</small>
-												<div class="item-title">
-													<h3>Ceker Mercon</h3>
-													<small>Original ...</small>
-												</div>
-											</a>
-											<div class="ribbon-size"><span>Size: M</span></div>
-										</figure>
-										<ul>
-											<li>
-												<a href="#modalOptionsItem03" class="item-size modal-opener">Options</a>
-											</li>
-											<li>
-												<span class="item-price format-price">10000</span>
-											</li>
-											<li>
-												<a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<!-- Grid Item 04 -->
-								<div id="gridItem04" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item  dimsum">
-									<div class="item-body">
-										<figure>
-											<img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/04.jpg" class="img-fluid lazy" alt="">
-											<a href="#modalDetailsItem04" class="item-body-link modal-opener">
-												<small>News</small>
-												<div class="item-title">
-													<h3>Dimsum Tulang Rangu</h3>
-													<small>Original ...</small>
-												</div>
-											</a>
-											<div class="ribbon-size"><span>Size: M</span></div>
-										</figure>
-										<ul>
-											<li>
-												<a href="#modalOptionsItem04" class="item-size modal-opener">Options</a>
-											</li>
-											<li>
-												<span class="item-price format-price">10000</span>
-											</li>
-											<li>
-												<a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</div>
+  <?php
+  $sql = "SELECT p.id, p.name, p.description, p.image_path, p.label, po.name AS size, po.price 
+          FROM products p 
+          LEFT JOIN product_options po ON p.id = po.product_id 
+          ORDER BY p.created_at DESC";
+  $result = $conn->query($sql);
+  if ($result->num_rows > 0):
+    $counter = 1;
+    while ($row = $result->fetch_assoc()):
+      $productId = $row['id'];
+      $name = htmlspecialchars($row['name']);
+      $desc = htmlspecialchars($row['description']);
+      $img = htmlspecialchars($row['image_path']);
+      $label = htmlspecialchars($row['label']);
+      $size = htmlspecialchars($row['size']);
+      $price = number_format($row['price'], 0, ',', '.');
+      $labelClass = ''; // Sesuaikan jika ada label class (opsional)
+  ?>
+  <div id="gridItem<?= sprintf("%02d", $counter) ?>" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item <?= strtolower(preg_replace('/\s+/', '', $name)) ?>">
+    <div class="item-body">
+      <figure>
+        <?php if (!empty($label)): ?>
+          <div class="ribbon-discount"><span><?= $label ?></span></div>
+        <?php endif; ?>
+        <img src="../img/bg/lazy-placeholder.jpg" data-src="../img/gallery/grid-items/<?= $img ?>" class="img-fluid lazy" alt="<?= $name ?>">
+        <a href="#modalDetailsItem<?= $productId ?>" class="item-body-link modal-opener">
+          <div class="item-title">
+            <h3><?= $name ?></h3>
+            <small><?= $desc ?></small>
+          </div>
+        </a>
+        <div class="ribbon-size"><span>Size: <?= $size ?: 'Default' ?></span></div>
+      </figure>
+      <ul>
+        <li><a href="#modalOptionsItem<?= $productId ?>" class="item-size modal-opener">Options</a></li>
+        <li><span class="item-price format-price"><?= $price ?></span></li>
+        <li><a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a></li>
+      </ul>
+    </div>
+  </div>
+  <?php
+      $counter++;
+    endwhile;
+  else:
+  ?>
+    <p class="text-center">Produk belum tersedia.</p>
+  <?php endif; ?>
+</div>
+
 							<!-- Grid End -->
 						</div>
 						<!-- Left Sidebar End -->

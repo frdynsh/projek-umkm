@@ -8,7 +8,7 @@ require_once __DIR__ . '/Config/Config.php';
 
 include '../db/db.php';
 
-$sql = "SELECT * FROM produk";
+$sql = "SELECT * FROM products";
 $result = $conn->query($sql);
 ?>
 
