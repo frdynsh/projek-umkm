@@ -591,8 +591,8 @@ $nameResult = $conn->query("SELECT DISTINCT name FROM products ORDER BY name ASC
 		<!-- Footer End -->
 
         <!-- Notification Messages -->
-        <div class="addedToCartMsg">Added to cart</div>
-        <div class="alreadyInCartMsg">Already in cart</div>
+        <div class="addedToCartMsg">Item Added to cart</div>
+        <div class="alreadyInCartMsg">Item Already in cart</div>
 
     </div>
     <!-- Page End -->

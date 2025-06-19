@@ -87,5 +87,5 @@ if ($cartIdToUpdate) {
     $insertStmt->bind_param("siisi", $userId, $productId, $optionId, $extraIdsStr, $quantity);
     $insertStmt->execute();
 
-    echo json_encode(['status' => 'success', 'message' => 'New item added']);
+    echo json_encode(['status' => 'success', 'message' => 'Item added to cart']);
 }
