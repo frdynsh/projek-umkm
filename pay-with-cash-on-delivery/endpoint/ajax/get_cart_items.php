@@ -5,34 +5,38 @@ require_once __DIR__ . '/../../../db/db.php';
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['user']['id'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Not logged in']);
+    echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
     exit;
 }
 
 $userId = $_SESSION['user']['id'];
 
 $sql = "
-SELECT 
-    c.id as cart_id,
-    p.name, p.image_path,
-    pv.variant,
-    pv.price,
-    c.quantity
-FROM carts c
-JOIN products p ON p.id = c.product_id
-JOIN product_variants pv ON pv.id = c.option_id
-WHERE c.user_id = ?
+    SELECT 
+        c.id AS cart_id,
+        c.product_id,
+        p.name,
+        p.image_path,
+        v.variant,
+        v.price,
+        c.quantity,
+        c.extra_ids
+    FROM carts c
+    JOIN products p ON c.product_id = p.id
+    JOIN product_variants v ON c.option_id = v.id
+    WHERE c.user_id = ?
+    AND COALESCE(c.updated_at, c.created_at) >= NOW() - INTERVAL 1 DAY
+    ORDER BY COALESCE(c.updated_at, c.created_at) DESC
 ";
-
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $userId);
+$stmt->bind_param("i", $userId);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$items = [];
+$cartItems = [];
 
 while ($row = $result->fetch_assoc()) {
-    $items[] = [
+    $item = [
         'cart_id' => $row['cart_id'],
         'name' => $row['name'],
         'image' => '/projek-umkm/uploads/' . str_replace('uploads/', '', $row['image_path']),
@@ -40,6 +44,29 @@ while ($row = $result->fetch_assoc()) {
         'price' => (int)$row['price'],
         'quantity' => (int)$row['quantity'],
     ];
+
+    $extras = [];
+    if (!empty($row['extra_ids'])) {
+        $extraIds = explode(',', $row['extra_ids']);
+        $placeholders = implode(',', array_fill(0, count($extraIds), '?'));
+        $types = str_repeat('i', count($extraIds));
+
+        $sqlExtras = "SELECT variant, price FROM product_variants WHERE id IN ($placeholders)";
+        $stmtExtras = $conn->prepare($sqlExtras);
+        $stmtExtras->bind_param($types, ...$extraIds);
+        $stmtExtras->execute();
+        $resExtras = $stmtExtras->get_result();
+
+        while ($extra = $resExtras->fetch_assoc()) {
+            $extras[] = [
+                'variant' => $extra['variant'],
+                'price' => (int)$extra['price'],
+            ];
+        }
+    }
+
+    $item['extras'] = $extras;
+    $cartItems[] = $item;
 }
 
-echo json_encode(['status' => 'ok', 'data' => $items]);
+echo json_encode(['status' => 'ok', 'data' => $cartItems]);

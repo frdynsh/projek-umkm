@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
 
       $success = "Login berhasil! Mengarahkan ke dashboard...";
-      $redirect = ($role === 'customer') ? 'index.html' : '../admin/views/view_add_product.php';
+      $redirect = ($role === 'customer') ? '../index.html' : '../admin/views/view_add_product.php';
       echo "<script>
         setTimeout(function() {
           window.location.href = '$redirect';

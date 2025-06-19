@@ -1,56 +1,94 @@
 <?php
 session_start();
 require_once __DIR__ . '/../../../db/db.php';
+header('Content-Type: application/json');
 
-// Validasi session login
 if (!isset($_SESSION['user']['id'])) {
     echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
     exit;
 }
 
-$userId = $_SESSION['user']['id'];
+$userId    = $_SESSION['user']['id'];
 $productId = $_POST['product_id'] ?? null;
-$optionId = $_POST['option_id'] ?? null;
-$quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
+$optionId  = $_POST['option_id'] ?? null;
+$quantity  = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
+$extraIds  = $_POST['extra_ids'] ?? [];
 
-// Validasi input
 if (!$productId || !$optionId) {
     echo json_encode(['status' => 'error', 'message' => 'Missing product or variant ID']);
     exit;
 }
 
-// Cek apakah variant benar dan sesuai dengan product
-$sql = "SELECT id FROM product_variants WHERE id = ? AND product_id = ?";
+$extraIds = array_filter($extraIds);
+sort($extraIds);
+$extraIdsStr = implode(',', $extraIds);
+
+// Ambil harga size
+$sql = "SELECT price FROM product_variants WHERE id = ? AND product_id = ? AND category = 'size'";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $optionId, $productId);
 $stmt->execute();
-$result = $stmt->get_result();
-$variant = $result->fetch_assoc();
+$variant = $stmt->get_result()->fetch_assoc();
 
 if (!$variant) {
     echo json_encode(['status' => 'error', 'message' => 'Invalid product variant']);
     exit;
 }
 
-// Cek apakah item sudah ada di cart
-$sqlCheck = "SELECT id, quantity FROM carts WHERE user_id = ? AND option_id = ?";
-$stmtCheck = $conn->prepare($sqlCheck);
-$stmtCheck->bind_param("si", $userId, $optionId);
-$stmtCheck->execute();
-$checkResult = $stmtCheck->get_result();
-$existing = $checkResult->fetch_assoc();
+$basePrice = (int)$variant['price'];
+$totalExtraPrice = 0;
 
-if ($existing) {
-    // Update quantity
-    $newQty = $existing['quantity'] + $quantity;
-    $updateStmt = $conn->prepare("UPDATE carts SET quantity = ? WHERE id = ?");
-    $updateStmt->bind_param("ii", $newQty, $existing['id']);
-    $updateStmt->execute();
-} else {
-    // Insert baru
-    $insertStmt = $conn->prepare("INSERT INTO carts (user_id, product_id, option_id, quantity, created_at) VALUES (?, ?, ?, ?, NOW())");
-    $insertStmt->bind_param("siii", $userId, $productId, $optionId, $quantity);
-    $insertStmt->execute();
+if (!empty($extraIds)) {
+    $placeholders = implode(',', array_fill(0, count($extraIds), '?'));
+    $types = str_repeat('i', count($extraIds));
+    $sqlExtras = "SELECT price FROM product_variants WHERE id IN ($placeholders) AND product_id = ? AND category = 'extra'";
+    $stmtExtras = $conn->prepare($sqlExtras);
+    $params = array_merge($extraIds, [$productId]);
+    $stmtExtras->bind_param($types . 'i', ...$params);
+    $stmtExtras->execute();
+    $resExtras = $stmtExtras->get_result();
+    while ($row = $resExtras->fetch_assoc()) {
+        $totalExtraPrice += (int)$row['price'];
+    }
 }
 
-echo json_encode(['status' => 'success']);
+$finalPrice = $basePrice + $totalExtraPrice;
+
+// Cek apakah item dengan kombinasi sama sudah ada
+$sqlCheck = "SELECT id, quantity, extra_ids FROM carts WHERE user_id = ? AND product_id = ? AND option_id = ?";
+$stmtCheck = $conn->prepare($sqlCheck);
+$stmtCheck->bind_param("sii", $userId, $productId, $optionId);
+$stmtCheck->execute();
+$resultCheck = $stmtCheck->get_result();
+
+$cartIdToUpdate = null;
+
+while ($row = $resultCheck->fetch_assoc()) {
+    $dbExtraIds = array_filter(explode(',', $row['extra_ids'] ?? ''));
+    sort($dbExtraIds);
+    if (implode(',', $dbExtraIds) === $extraIdsStr) {
+        $cartIdToUpdate = $row['id'];
+        $currentQty = (int)$row['quantity'];
+        break;
+    }
+}
+
+if ($cartIdToUpdate) {
+    $newQty = $currentQty + $quantity;
+    if ($newQty > 10) {
+        echo json_encode(['status' => 'error', 'message' => 'Maksimal pembelian adalah 10 item']);
+        exit;
+    }
+
+    $updateStmt = $conn->prepare("UPDATE carts SET quantity = ?, updated_at = NOW() WHERE id = ?");
+    $updateStmt->bind_param("ii", $newQty, $cartIdToUpdate);
+    $updateStmt->execute();
+
+    echo json_encode(['status' => 'success', 'message' => 'Quantity updated']);
+} else {
+    $insertStmt = $conn->prepare("INSERT INTO carts (user_id, product_id, option_id, extra_ids, quantity, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+    $insertStmt->bind_param("siisi", $userId, $productId, $optionId, $extraIdsStr, $quantity);
+    $insertStmt->execute();
+
+    echo json_encode(['status' => 'success', 'message' => 'New item added']);
+}

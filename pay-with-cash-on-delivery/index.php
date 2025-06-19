@@ -513,21 +513,18 @@ require_once __DIR__ . '/Config/Config.php';
 
 	$sql = "SELECT * FROM product_variants ORDER BY product_id, category, id";
 	$result = $conn->query($sql);
-	$productOptions = [];
-	$extraOptions = [];
+	$variants = [];
 
 	if ($result && $result->num_rows > 0) {
-		while ($opt = $result->fetch_assoc()) {
-			if ($opt['category'] === 'size') {
-				$productOptions[$opt['product_id']][] = $opt;
-			} elseif ($opt['category'] === 'extra') {
-				$extraOptions[$opt['product_id']][] = $opt;
-			}
+		while ($row = $result->fetch_assoc()) {
+			$category = $row['category'];
+			$productId = $row['product_id'];
+			$variants[$productId][$category][] = $row;
 		}
 	}
 	?>
 
-	<?php foreach ($productOptions as $productId => $options): ?>
+	<?php foreach ($variants as $productId => $productVariants): ?>
 	<div id="modalOptionsItem<?= $productId ?>" class="modal-popup zoom-anim-dialog mfp-hide">
 		<div class="small-dialog-header">
 			<h3>Opsi Produk</h3>
@@ -535,45 +532,52 @@ require_once __DIR__ . '/Config/Config.php';
 			<div class="alreadyInCartMsgInModal">Already in cart</div>
 		</div>
 		<div class="content">
-			<!-- Size Options (Radio Buttons) -->
-			<?php foreach ($options as $opt): ?>
-			<?php $isMedium = strtolower($opt['variant']) === 'medium'; ?>
-			<div class="row">
-				<div class="col-md-12 col-sm-12">
-					<label class="cbx radio-wrapper">
-						<input 
-							type="radio" 
-							value="<?= htmlspecialchars($opt['variant']) ?>" 
-							name="size-options-item-<?= $productId ?>" 
-							<?= $isMedium ? 'checked' : '' ?> >
-						<span class="checkmark"></span>
-						<span class="radio-caption"><?= htmlspecialchars($opt['variant']) ?></span>
-						<span class="option-price format-price">Rp <?= number_format($opt['price'], 0, ',', '.') ?></span>
-					</label>
-				</div>
-			</div>
-			<?php endforeach; ?>
 
-			<!-- Extra Options (Checkbox) -->
-			<?php if (isset($extraOptions[$productId])): ?>
-				<?php foreach ($extraOptions[$productId] as $extra): ?>
+			<!-- Size (Radio Buttons) -->
+			<?php if (!empty($productVariants['size'])): ?>
+				<div class="row"><div class="col-12"><strong>Ukuran:</strong></div></div>
+				<?php foreach ($productVariants['size'] as $var): ?>
+				<div class="row">
+					<div class="col-md-12 col-sm-12">
+						<label class="cbx radio-wrapper">
+							<input 
+								type="radio"
+								class="size-variant"
+								name="size-options-item-<?= $productId ?>"
+								data-product-id="<?= $productId ?>"
+								value="<?= $var['id'] ?>"
+								data-price="<?= $var['price'] ?>"
+								<?= strtolower($var['variant']) === 'medium' ? 'checked' : '' ?>>
+							<span class="checkmark"></span>
+							<span class="radio-caption"><?= htmlspecialchars($var['variant']) ?></span>
+							<span class="option-price format-price">Rp <?= number_format($var['price'], 0, ',', '.') ?></span>
+						</label>
+					</div>
+				</div>
+				<?php endforeach; ?>
+			<?php endif; ?>
+
+			<!-- Extra (Checkboxes) -->
+			<?php if (!empty($productVariants['extra'])): ?>
+				<div class="row"><div class="col-12"><strong>Tambahan:</strong></div></div>
+				<?php foreach ($productVariants['extra'] as $var): ?>
 				<div class="row">
 					<div class="col-md-12 col-sm-12">
 						<input 
-							type="checkbox" 
-							id="item<?= $productId ?>Extra<?= $extra['id'] ?>" 
-							class="inp-cbx" 
-							name="extra-options-item-<?= $productId ?>[]" 
-							value="<?= htmlspecialchars($extra['variant']) ?>" 
-							data-price="<?= $extra['price'] ?>" />
-						<label class="cbx mb-0" for="item<?= $productId ?>Extra<?= $extra['id'] ?>">
+							type="checkbox"
+							id="item<?= $productId ?>Extra<?= $var['id'] ?>"
+							class="inp-cbx extra-variant"
+							name="extra-options-item-<?= $productId ?>[]"
+							value="<?= $var['id'] ?>"
+							data-price="<?= $var['price'] ?>" />
+						<label class="cbx mb-0" for="item<?= $productId ?>Extra<?= $var['id'] ?>">
 							<span>
 								<svg width="12px" height="10px" viewbox="0 0 12 10">
 									<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 								</svg>
 							</span>
-							<span><?= htmlspecialchars($extra['variant']) ?></span>
-							<span class="option-price format-price">Rp <?= number_format($extra['price'], 0, ',', '.') ?></span>
+							<span><?= htmlspecialchars($var['variant']) ?></span>
+							<span class="option-price format-price">Rp <?= number_format($var['price'], 0, ',', '.') ?></span>
 						</label>
 					</div>
 				</div>
@@ -586,7 +590,7 @@ require_once __DIR__ . '/Config/Config.php';
 					<button type="button" class="btn-modal-close">Close</button>
 				</div>
 				<div class="col-8">
-					<button type="button" class="btn-modal add-options-item-to-cart">Add to Cart</button>
+					<button type="button" class="btn-modal add-options-item-to-cart" data-product-id="<?= $productId ?>">Add to Cart</button>
 				</div>
 			</div>
 		</div>
