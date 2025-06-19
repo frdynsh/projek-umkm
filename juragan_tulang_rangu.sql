@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 19, 2025 at 06:20 AM
+-- Generation Time: Jun 19, 2025 at 12:09 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.16
 
@@ -46,16 +46,20 @@ CREATE TABLE `carts` (
   `user_id` varchar(20) NOT NULL,
   `product_id` int NOT NULL,
   `option_id` int DEFAULT NULL,
+  `extra_ids` text,
   `quantity` int NOT NULL DEFAULT '1',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `carts`
 --
 
-INSERT INTO `carts` (`id`, `user_id`, `product_id`, `option_id`, `quantity`, `created_at`) VALUES
-(1, 'CSTJTR1', 1, 2, 29, '2025-06-19 06:18:37');
+INSERT INTO `carts` (`id`, `user_id`, `product_id`, `option_id`, `extra_ids`, `quantity`, `created_at`, `updated_at`) VALUES
+(31, 'CSTJTR1', 1, 2, '', 8, '2025-06-19 11:42:58', '2025-06-19 19:08:21'),
+(32, 'CSTJTR1', 1, 1, '', 4, '2025-06-19 11:51:18', '2025-06-19 19:05:10'),
+(33, 'CSTJTR1', 1, 3, '', 2, '2025-06-19 11:52:25', '2025-06-19 19:04:42');
 
 -- --------------------------------------------------------
 
@@ -163,9 +167,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `phone`, `address`, `role`, `created_at`, `remember_token`) VALUES
-('ADMNJTR1', 'Naufal', 'naufalsafiqq@gmail.com', '$2y$10$DTBd0433OefMQjTi3Qm99OFTqJEDGGoL5KISn6c.f2CjuuDcsn.i.', '6281385278551', 'Jakarta', 'admin', '2025-06-18 09:07:53', 'f419a6da1ef65421c91cda3b6155a55e4fec5306647b0bc687b2b086e1050499'),
+('ADMNJTR1', 'Naufal', 'naufalsafiqq@gmail.com', '$2y$10$DTBd0433OefMQjTi3Qm99OFTqJEDGGoL5KISn6c.f2CjuuDcsn.i.', '6281385278551', 'Jakarta', 'admin', '2025-06-18 09:07:53', NULL),
 ('ADMNJTR2', 'ferdi', 'ferdiyansah@gmail.com', '$2y$10$MpyGQePCxFAaHb6TcnbZBuXqiPPZNAgV/jXFfPXkZ1xiQPUy6rmKy', '62859121392342', 'Cirebon', 'admin', '2025-06-18 09:14:28', NULL),
-('CSTJTR1', 'sapiq', 'naufalsafiq.f@gmail.com', '$2y$10$DxZcr5w92qfrIszizlLLJOyWh5dL8TrtKx2b1ZLsdDZUwIt5xSEF2', '0813876545267', 'Jepang', 'customer', '2025-06-19 06:17:45', 'f8cc543c1cec8fa0a90f9a25f1c054b4fac5576b3783c2cea68b525734e1fc55');
+('CSTJTR1', 'sapiq', 'naufalsafiq.f@gmail.com', '$2y$10$DxZcr5w92qfrIszizlLLJOyWh5dL8TrtKx2b1ZLsdDZUwIt5xSEF2', '0813876545267', 'Jepang', 'customer', '2025-06-19 06:17:45', NULL);
 
 --
 -- Indexes for dumped tables
@@ -236,7 +240,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `daily_financial_records`
