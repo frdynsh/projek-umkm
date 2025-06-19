@@ -328,6 +328,55 @@
 			centsLimit: 0
 		});
 	}
+	
+	function formatRupiah(angka) {
+	return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+	function loadCartItems() {
+		$.getJSON('endpoint/ajax/get_cart_items.php', function(response) {
+			if (response.status === 'ok') {
+				const items = response.data;
+				const itemList = $('#itemList');
+				itemList.empty();
+
+				if (items.length === 0) {
+					itemList.append(`
+						<li id="emptyCart">
+							<div class="order-list-img"><img src="../img/bg/empty-cart-small.png" alt="Empty Cart"/></div>
+							<div class="order-list-details">
+								<h4>Your cart is empty<br/><small>Start adding items</small></h4>
+								<div class="order-list-price format-price">Rp 0</div>
+							</div>
+						</li>
+					`);
+				} else {
+					items.forEach(item => {
+						const subTotal = item.price * item.quantity;
+						itemList.append(`
+							<li id="cartItem${item.cart_id}">
+								<div class="order-list-img"><img src="${item.image}" alt=""></div>
+								<div class="order-list-details">
+									<h4>${item.name}<br/><small>Size: ${item.variant}</small></h4>
+									<div class="qty-buttons">
+										<input type="button" value="+" class="qtyplus" data-id="${item.cart_id}">
+										<input type="text" name="qty" value="${item.quantity}" class="qty form-control" readonly>
+										<input type="button" value="-" class="qtyminus" data-id="${item.cart_id}">
+									</div>
+									<div class="order-list-price format-price">${formatRupiah(subTotal)}</div>
+									<div class="order-list-delete"><a href="javascript:;" class="delete-cart" data-id="${item.cart_id}"><i class="icon icon-trash"></i></a></div>
+								</div>
+							</li>
+						`);
+					});
+				}
+			}
+		});
+	}
+
+	$(document).ready(function() {
+		loadCartItems();
+	});
 
 	// Function to reset total price
 	function resetTotal() {
@@ -779,11 +828,22 @@
 
 	// Item having options is added to cart
 	$('.add-options-item-to-cart').on('click', function () {
+		const optionId = $(this).data('option-id');
+		const productId = $(this).data('product-id');
 
-		id = $(this).parent().parent().parent().parent().attr('id').match(/\d+/);
-		addOptionsItemToCart(id);
-		validateTotal();
-
+		$.ajax({
+			url: 'endpoint/ajax/add_to_cart.php',
+			method: 'POST',
+			data: {
+				option_id: optionId,
+				product_id: productId,
+				quantity: 1
+			},
+			success: function (response) {
+				// Tampilkan item baru atau refresh isi cart
+				loadCartItems();
+			}
+		});
 	});
 
 	// Pure item without options is added to cart

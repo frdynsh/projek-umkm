@@ -150,17 +150,12 @@ require_once __DIR__ . '/Config/Config.php';
 								$sql = "
 								SELECT 
 									p.id, p.name, p.description, p.image_path, p.label, p.stock,
-									(
-										SELECT variant FROM product_variants 
-										WHERE product_id = p.id AND category = 'size' AND LOWER(variant) = 'medium'
-										LIMIT 1
-									) as option_size,
-									(
-										SELECT price FROM product_variants 
-										WHERE product_id = p.id AND category = 'size' AND LOWER(variant) = 'medium'
-										LIMIT 1
-									) as price
+									pv.id as option_id,
+									pv.variant,
+									pv.price
 								FROM products p
+								LEFT JOIN product_variants pv 
+									ON pv.product_id = p.id AND pv.category = 'size' AND LOWER(pv.variant) = 'medium'
 								ORDER BY p.created_at DESC
 								";
 
@@ -215,7 +210,13 @@ require_once __DIR__ . '/Config/Config.php';
 													<span class="item-price format-price">Rp <?= $price ?></span>
 												</li>
 												<li>
-													<a href="javascript:;" class="add-options-item-to-cart"><i class="icon icon-shopping-cart"></i></a>
+													<a href="javascript:;" 
+													class="add-options-item-to-cart"
+													data-product-id="<?= $id ?>"
+													data-option-id="<?= $row['option_id'] ?>"
+													data-name="<?= $name ?>">
+													<i class="icon icon-shopping-cart"></i>
+													</a>
 												</li>
 											</ul>
 										</div>

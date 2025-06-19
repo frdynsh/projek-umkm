@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 19, 2025 at 04:39 AM
+-- Generation Time: Jun 19, 2025 at 06:20 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.16
 
@@ -50,6 +50,13 @@ CREATE TABLE `carts` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `carts`
+--
+
+INSERT INTO `carts` (`id`, `user_id`, `product_id`, `option_id`, `quantity`, `created_at`) VALUES
+(1, 'CSTJTR1', 1, 2, 29, '2025-06-19 06:18:37');
+
 -- --------------------------------------------------------
 
 --
@@ -87,30 +94,6 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`id`, `name`, `description`, `image_path`, `label`, `stock`, `created_at`) VALUES
 (1, 'Dimsum', 'Apa ya', 'uploads/1750243522_Bukti_submit.jpg', 'NEW', 15, '2025-06-18 10:45:22');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `product_options`
---
-
-CREATE TABLE `product_options` (
-  `id` int NOT NULL,
-  `product_id` int NOT NULL,
-  `size` varchar(50) NOT NULL,
-  `extra` varchar(100) DEFAULT NULL,
-  `price` int NOT NULL,
-  `type` enum('size','extra') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `product_options`
---
-
-INSERT INTO `product_options` (`id`, `product_id`, `size`, `extra`, `price`, `type`) VALUES
-(1, 1, 'Small', 'Extra Spicy', 5000, 'size'),
-(2, 1, 'Medium', 'Extra Spicy', 10000, 'size'),
-(3, 1, 'Extra Spicy', 'Extra Spicy', 2000, 'extra');
 
 -- --------------------------------------------------------
 
@@ -181,7 +164,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `phone`, `address`, `role`, `created_at`, `remember_token`) VALUES
 ('ADMNJTR1', 'Naufal', 'naufalsafiqq@gmail.com', '$2y$10$DTBd0433OefMQjTi3Qm99OFTqJEDGGoL5KISn6c.f2CjuuDcsn.i.', '6281385278551', 'Jakarta', 'admin', '2025-06-18 09:07:53', 'f419a6da1ef65421c91cda3b6155a55e4fec5306647b0bc687b2b086e1050499'),
-('ADMNJTR2', 'ferdi', 'ferdiyansah@gmail.com', '$2y$10$MpyGQePCxFAaHb6TcnbZBuXqiPPZNAgV/jXFfPXkZ1xiQPUy6rmKy', '62859121392342', 'Cirebon', 'admin', '2025-06-18 09:14:28', NULL);
+('ADMNJTR2', 'ferdi', 'ferdiyansah@gmail.com', '$2y$10$MpyGQePCxFAaHb6TcnbZBuXqiPPZNAgV/jXFfPXkZ1xiQPUy6rmKy', '62859121392342', 'Cirebon', 'admin', '2025-06-18 09:14:28', NULL),
+('CSTJTR1', 'sapiq', 'naufalsafiq.f@gmail.com', '$2y$10$DxZcr5w92qfrIszizlLLJOyWh5dL8TrtKx2b1ZLsdDZUwIt5xSEF2', '0813876545267', 'Jepang', 'customer', '2025-06-19 06:17:45', 'f8cc543c1cec8fa0a90f9a25f1c054b4fac5576b3783c2cea68b525734e1fc55');
 
 --
 -- Indexes for dumped tables
@@ -215,13 +199,6 @@ ALTER TABLE `daily_financial_records`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `product_options`
---
-ALTER TABLE `product_options`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `product_id` (`product_id`);
 
 --
 -- Indexes for table `product_variants`
@@ -259,7 +236,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `daily_financial_records`
@@ -272,12 +249,6 @@ ALTER TABLE `daily_financial_records`
 --
 ALTER TABLE `products`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `product_options`
---
-ALTER TABLE `product_options`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `product_variants`
@@ -301,13 +272,7 @@ ALTER TABLE `announcements`
 ALTER TABLE `carts`
   ADD CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `carts_ibfk_3` FOREIGN KEY (`option_id`) REFERENCES `product_options` (`id`) ON DELETE SET NULL;
-
---
--- Constraints for table `product_options`
---
-ALTER TABLE `product_options`
-  ADD CONSTRAINT `product_options_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_carts_option_variant` FOREIGN KEY (`option_id`) REFERENCES `product_variants` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `product_variants`
