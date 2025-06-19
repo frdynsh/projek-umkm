@@ -12,14 +12,11 @@ $userId    = $_SESSION['user']['id'];
 $productId = $_POST['product_id'] ?? null;
 $optionId  = $_POST['option_id'] ?? null;
 $quantity  = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
-$extraIds  = $_POST['extra_ids'] ?? [];
-
-if (!$productId || !$optionId) {
-    echo json_encode(['status' => 'error', 'message' => 'Missing product or variant ID']);
-    exit;
+$rawExtraIds = $_POST['extra_ids'] ?? [];
+if (!is_array($rawExtraIds)) {
+    $rawExtraIds = [$rawExtraIds]; // konversi string jadi array jika perlu
 }
-
-$extraIds = array_filter($extraIds);
+$extraIds = array_filter($rawExtraIds);
 sort($extraIds);
 $extraIdsStr = implode(',', $extraIds);
 
