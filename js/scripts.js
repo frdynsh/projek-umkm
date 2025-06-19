@@ -108,61 +108,52 @@
 	// =====================================================
 	if ($('.isotope-item').length > 0) {
 
-		// Quick search regex
 		var qsRegex;
 		var filterValue;
 
-		// Init Isotope
 		var $grid = $('.grid').isotope({
-			itemSelector: '.isotope-item',			
+			itemSelector: '.isotope-item',
 			filter: function () {
 				var $this = $(this);
-				var searchResult = qsRegex ? $this.text().match(qsRegex) : true;
+				var searchResult = qsRegex ? $this.find('h3').text().match(qsRegex) : true;
 				var selectResult = filterValue ? $this.is(filterValue) : true;
 				return searchResult && selectResult;
 			}
 		});
 
-		// Bind filter on select change
+		// Filter kategori dari select
 		$('#category').on('change', function () {
-			// Get filter value from option value
 			filterValue = $(this).val();
 			$grid.isotope();
 		});
 
-		// Use value of search field to filter
+		// Filter pencarian nama
 		var $quicksearch = $('#search').keyup(debounce(function () {
 			qsRegex = new RegExp($quicksearch.val(), 'gi');
 			$grid.isotope();
 		}));
 
-		// Debounce so filtering doesn't happen every millisecond
+		// Debounce helper
 		function debounce(fn, threshold) {
 			var timeout;
 			return function debounced() {
-				if (timeout) {
-					clearTimeout(timeout);
-				}
-				function delayed() {
-					fn();
-					timeout = null;
-				}
-				setTimeout(delayed, threshold || 100);
+				clearTimeout(timeout);
+				timeout = setTimeout(fn, threshold || 100);
 			};
 		}
 
-		// Reset filters
+		// Reset semua filter
 		$('.isotope-reset').on('click', function () {
 			qsRegex = '';
 			filterValue = '';
 
 			$('#search').val('');
-			$('#category').prop('selectedIndex', 0).niceSelect('update');;
+			$('#category').prop('selectedIndex', 0).niceSelect('update');
 
 			$grid.isotope();
-
 		});
 	}
+
 
 	// =====================================================
 	// MOBILE MENU
@@ -392,7 +383,7 @@
 		});
 	}
 
-
+	// Fungsi Validasi input kuantitas
 	function attachCartEvents() {
 		// Tambah qty
 		$('.qtyplus').off().on('click', function () {
@@ -402,7 +393,7 @@
 			if (currentQty < 10) {
 				updateCartQuantity(cartId, currentQty + 1);
 			} else {
-				alert('Maksimal pembelian hanya 10 per produk.');
+				callWarningPopup('#modalWarningQtyMaxLimit');
 			}
 		});
 
@@ -414,9 +405,9 @@
 			if (currentQty > 1) {
 				updateCartQuantity(cartId, currentQty - 1);
 			} else {
-				if (confirm('Apakah Anda ingin menghapus produk dari keranjang?')) {
-					deleteCartItem(cartId);
-				}
+				// Qty == 1, tampilkan modal konfirmasi penghapusan
+				$('#modalWarningQtyMinLimit').data('cart-id', cartId);
+				callWarningPopup('#modalWarningQtyMinLimit');
 			}
 		});
 
@@ -626,7 +617,7 @@
 		}
 
 		if (!optionId) {
-			alert('Ukuran produk belum dipilih!');
+			callWarningPopup('Ukuran produk belum dipilih!');
 			return;
 		}
 
@@ -640,14 +631,14 @@
 				extra_ids: extraIds,
 				quantity: 1
 			},
-			traditional: true, // ⬅️ penting agar extra_ids[] tidak dikirim sebagai object nested
+			traditional: true,
 			dataType: 'json',
 			success: function (res) {
-				if (res.status === 'success' || res.status === 'ok') {
-					alert(res.message || 'Produk berhasil ditambahkan ke keranjang!');
+				if (res.status === 'success') {
+					showItemAddedMessage();
 					loadCartItems();
-				} else {
-					alert(res.message || 'Gagal menambahkan ke keranjang');
+				} else if (res.status === 'error') {
+					alert(res.message);
 				}
 			},
 			error: function (xhr, status, error) {
