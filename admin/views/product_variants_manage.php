@@ -43,7 +43,7 @@ while ($row = $variant_check->fetch_assoc()) {
 
         <div class="main-content">
             <h2 class="mb-4">Add Product Variants</h2>
-            <form action="../controllers/product_variant_controller.php" method="POST" onsubmit="return validateForm()">
+            <form action="../controllers/product_variants_controller.php" method="POST" onsubmit="return validateForm()">
                 <div class="mb-3">
                     <label class="form-label">Select Product</label>
                     <select id="product_id" name="product_id" class="form-select" required>
