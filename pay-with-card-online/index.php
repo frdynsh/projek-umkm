@@ -227,12 +227,12 @@ $nameResult = $conn->query("SELECT DISTINCT name FROM products ORDER BY name ASC
                                                 <span class="item-price format-price">Rp <?= $price ?></span>
                                             </li>
                                             <li>
-                                               <a href="javascript:;" 
-                                                    class="add-options-item-to-cart"
-                                                    data-product-id="<?= $id ?>"
-                                                    data-option-id="<?= $row['option_id'] ?>"
-                                                    data-name="<?= $name ?>">
-                                                    <i class="icon icon-shopping-cart"></i>
+                                                <a href="javascript:;" 
+                                                class="add-options-item-to-cart"
+                                                data-product-id="<?= $id ?>"
+                                                data-option-id="<?= $row['option_id'] ?>"
+                                                data-name="<?= $name ?>">
+                                                <i class="icon icon-shopping-cart"></i>
                                                 </a>
                                             </li>
                                         </ul>
