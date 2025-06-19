@@ -207,13 +207,17 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 									<div id="gridItem<?= str_pad($index, 2, '0', STR_PAD_LEFT) ?>" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item <?= $slug ?>">
 										<div class="item-body">
 											<figure>
-												<?php if (!empty($label)): ?>
-													<div><?= $label ?></div>
-												<?php endif; ?>
-
 												<img src="<?= $imageUrl ?>" class="img-fluid" alt="<?= $name ?>">
-
 												<a href="#modalDetailsItem<?= $id ?>" class="item-body-link modal-opener">
+													<?php if (!empty($label)): ?>
+														<?php if (strtolower($label) === 'hot'): ?>
+															<small class="red"><?= $label ?></small>
+														<?php elseif (strtolower($label) === 'new'): ?>
+															<small><?= $label ?></small>
+														<?php else: ?>
+															<small><?= $label ?></small>
+														<?php endif; ?>
+													<?php endif; ?>
 													<div class="item-title">
 														<h3><?= $name ?></h3>
 														<small><?= $desc ?></small>
@@ -398,7 +402,7 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 											<!-- Cart Items End -->
 											<!-- Shipping Method -->
 											<div class="row">
-												<div class="col-md-12 col-sm-6">
+												<div class="col-md-12">
 													<div class="form-group">
 														<label for="shippingMethod">Shipping Method</label>
 														<select id="shippingMethod" name="shipping_method" class="form-control" required>
@@ -615,6 +619,25 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 	</div>
 	<!-- Page End -->
 
+	<!-- Modal Warning Generic -->
+	<div id="modalWarningGeneric" class="modal-popup zoom-anim-dialog mfp-hide">
+		<div class="small-dialog-header">
+			<h3>Warning</h3>
+		</div>
+		<div class="content">
+			<h6 class="mb-0 warning-text">Terjadi kesalahan.</h6>
+		</div>
+		<div class="footer">
+			<div class="row">
+				<div class="col-4 pr-0">
+					<button type="button" class="btn-modal-close">Got it</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal Warning Generic End -->
+
+
 	<!-- Modal Warning Qty min. Limit -->
 	<div id="modalWarningQtyMinLimit" class="modal-popup zoom-anim-dialog mfp-hide">
 		<div class="small-dialog-header">
@@ -650,6 +673,27 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 		</div>
 	</div>
 	<!-- Modal Warning Qty max. Limit End -->
+
+	<!-- Modal Confirm Delete -->
+	<div id="modalConfirmDeleteCart" class="modal-popup zoom-anim-dialog mfp-hide">
+		<div class="small-dialog-header">
+			<h3>Konfirmasi</h3>
+		</div>
+		<div class="content">
+			<h6 class="mb-0">Yakin ingin menghapus item ini dari keranjang?</h6>
+		</div>
+		<div class="footer">
+			<div class="row">
+				<div class="col-6 pr-0">
+					<button type="button" class="btn-modal-close">Batal</button>
+				</div>
+				<div class="col-6 pl-0">
+					<button type="button" class="btn-confirm-delete">Hapus</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal Confirm Delete End -->
 
 	<!-- Back to top button -->
 	<div id="toTop"><i class="icon icon-chevron-up"></i></div>

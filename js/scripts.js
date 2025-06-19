@@ -159,7 +159,7 @@
 	// MOBILE MENU
 	// =====================================================
 	var $menu = $("nav#menu").mmenu({
-		"extensions": ["pagedim-black", "theme-white"], // "theme-dark" can be changed to: "theme-dark"
+		"extensions": ["pagedim-black", "theme-white"], 
 		counters: true,
 		keyboardNavigation: {
 			enable: true,
@@ -266,6 +266,12 @@
 		$.magnificPopup.close();
 	});
 
+	$('.btn-confirm-delete').on('click', function () {
+		const cartId = $('#modalConfirmDeleteCart').data('cart-id');
+		deleteCartItem(cartId);
+		$.magnificPopup.close();
+	});
+
 	// =====================================================
 	// INIT DROPDOWNS
 	// =====================================================
@@ -309,16 +315,6 @@
 	// =====================================================
 	// HELPER FUNCTIONS
 	// =====================================================
-
-	// Function to format item prices usign priceFormat plugin
-	// function formatPrice() {
-	// 	$('.format-price').priceFormat({
-	// 		prefix: 'Rp ',
-	// 		centsSeparator: ',',
-	// 		thousandsSeparator: '.',
-	// 		centsLimit: 0
-	// 	});
-	// }
 	
 	function formatRupiah(angka) {
 		return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -435,7 +431,7 @@
 				}
 		});
 	}
-
+ 
 	function attachCartEvents() {
 		// Tambah qty
 		$('.qtyplus').off().on('click', function () {
@@ -457,18 +453,17 @@
 			if (currentQty > 1) {
 				updateCartQuantity(cartId, currentQty - 1);
 			} else {
-				// Qty == 1, tampilkan modal konfirmasi penghapusan
 				$('#modalWarningQtyMinLimit').data('cart-id', cartId);
 				callWarningPopup('#modalWarningQtyMinLimit');
 			}
 		});
 
-		// Hapus item langsung
+		// Hapus item langsung (pakai modal)
 		$('.delete-cart').off().on('click', function () {
 			const cartId = $(this).data('id');
-			if (confirm('Yakin ingin menghapus item ini dari keranjang?')) {
-				deleteCartItem(cartId);
-			}
+			// Simpan cart ID ke modal agar bisa dipakai saat konfirmasi
+			$('#modalConfirmDeleteCart').data('cart-id', cartId);
+			callWarningPopup('#modalConfirmDeleteCart');
 		});
 	}
 
@@ -535,7 +530,7 @@
 		});
 	}
 
-	// Function to show a popup essage that item is added to cart
+	// Function to show a popup message that item is added to cart
 	function showItemAddedMessage() {
 
 		// Only show this message when there is no popup opened
@@ -553,25 +548,6 @@
 		}
 	}
 
-	// Function to show a popup message that item is added to cart
-	function showItemAlreadyInCartMessage() {
-
-		// Only show this message when there is no popup opened
-		if (!$.magnificPopup.instance.isOpen) {
-
-			// Show already in cart message
-			$('.alreadyInCartMsg').fadeIn('slow', function () {
-				$('.alreadyInCartMsg').fadeOut();
-			});
-
-		} else if ($.magnificPopup.instance.isOpen) { // Only show this
-			// message when a popup
-			// is opened
-			$('.alreadyInCartMsgInModal').fadeIn('slow', function () {
-				$('.alreadyInCartMsgInModal').fadeOut();
-			});
-		}
-	}
 
 	// Function to validate total price
 	function validateTotal() {
@@ -597,9 +573,6 @@
 		$('.total').val(total);
 		$('.totalValue').text(formatRupiah(total));
 		$('#totalOrderSummary').val(total);
-
-		// Optional: untuk debugging
-		// console.log('Total termasuk ongkir:', total);
 	}
 
 	// Item having options is added to cart
@@ -640,8 +613,13 @@
 				if (res.status === 'success') {
 					showItemAddedMessage();
 					loadCartItems();
-				} else if (res.status === 'error') {
-					alert(res.message);
+				}  else if (res.status === 'error') {
+					if (res.message === 'Quantity maximum limit is: 10 !') {
+						callWarningPopup('#modalWarningQtyMaxLimit');
+					} else {
+						$('#modalWarningGeneric .warning-text').text(res.message);
+						callWarningPopup('#modalWarningGeneric');
+					}
 				}
 			},
 			error: function (xhr, status, error) {
