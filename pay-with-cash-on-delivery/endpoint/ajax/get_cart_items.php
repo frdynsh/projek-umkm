@@ -69,4 +69,19 @@ while ($row = $result->fetch_assoc()) {
     $cartItems[] = $item;
 }
 
-echo json_encode(['status' => 'ok', 'data' => $cartItems]);
+$total_products_price = 0;
+foreach ($cartItems as $item) {
+    $itemPrice = $item['price'];
+    if (!empty($item['extras'])) {
+        foreach ($item['extras'] as $extra) {
+            $itemPrice += $extra['price'];
+        }
+    }
+    $total_products_price += $itemPrice * $item['quantity'];
+}
+
+echo json_encode([
+    'status' => 'ok',
+    'data' => $cartItems,
+    'total_products_price' => $total_products_price
+]);

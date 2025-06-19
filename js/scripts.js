@@ -320,18 +320,61 @@
 	// =====================================================
 
 	// Function to format item prices usign priceFormat plugin
-	function formatPrice() {
-		$('.format-price').priceFormat({
-			prefix: 'Rp ',
-			centsSeparator: ',',
-			thousandsSeparator: '.',
-			centsLimit: 0
-		});
-	}
+	// function formatPrice() {
+	// 	$('.format-price').priceFormat({
+	// 		prefix: 'Rp ',
+	// 		centsSeparator: ',',
+	// 		thousandsSeparator: '.',
+	// 		centsLimit: 0
+	// 	});
+	// }
 	
 	function formatRupiah(angka) {
 		return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 	}
+
+	// Load zona ke select
+	function loadDeliveryZones() {
+		$.getJSON('endpoint/ajax/get_delivery_zones.php', function(res) {
+			if (res.status === 'ok') {
+				const $zone = $('#deliveryZone');
+				$zone.empty();
+				$zone.append(`<option value="">-- Select Zone --</option>`);
+				res.data.forEach(z => {
+					$zone.append(`<option value="${z.id}" data-fee="${z.fee}">${z.label} - ${formatRupiah(z.fee)}</option>`);
+				});
+			}
+		});
+	}
+
+	// Update total jika zona berubah
+	$('#deliveryZone').on('change', function () {
+		const selectedFee = $('option:selected', this).data('fee') || 0;
+		const productTotal = parseInt($('.total').val()) || 0;
+
+		const newTotal = productTotal + selectedFee;
+		$('.totalValue').text(formatRupiah(newTotal));
+		$('#totalOrderSummary').val(newTotal);
+	});
+
+	// Sembunyikan/ tampilkan zona jika metode bukan delivery
+	$('#shippingMethod').on('change', function () {
+		const val = $(this).val();
+		if (val === 'delivery') {
+			$('#zoneContainer').show();
+		} else {
+			$('#zoneContainer').hide();
+			$('#deliveryZone').val('');
+			// Reset total jadi hanya produk
+			const base = parseInt($('.total').val()) || 0;
+			$('.totalValue').text(formatRupiah(base));
+			$('#totalOrderSummary').val(base);
+		}
+	});
+
+	$(document).ready(function () {
+		loadDeliveryZones();
+	});
 
 	function loadCartItems() {
 		$.getJSON('endpoint/ajax/get_cart_items.php', function(response) {
@@ -388,10 +431,19 @@
 
 				// Attach events
 				attachCartEvents();
+
 			}
+				if (typeof response.total_products_price !== 'undefined') {
+					const deliveryOption = $('input[name="transfer"]:checked').val();
+					const deliveryFee = deliveryOption === 'delivery' ? 10000 : 0;
+					const total = response.total_products_price + deliveryFee;
+		
+					$('.total').val(total);
+					$('.totalValue').text(formatRupiah(total));
+					$('#totalOrderSummary').val(total);
+				}
 		});
 	}
-
 
 	function attachCartEvents() {
 		// Tambah qty
@@ -456,6 +508,11 @@
 
 	$(document).ready(function() {
 		loadCartItems();
+		
+		$('input[name="transfer"]').on('change', function () {
+			updateTotal();
+		});
+
 	});
 
 	// Function to reset total price
@@ -530,82 +587,28 @@
 		$('#totalOrderSummary').parsley().validate();
 	}
 
-	// =====================================================
-	// CART FUNCTIONS
-	// =====================================================
-	var id = '';
-	var rowId = '';
-	var size = '';
-	var thumbnailPath = '';
-	var itemTitle = '';
-	var description = '';
-	var itemPrice = '';
-	var extraTitle = '';
-	var extraPrice = '';
-	var extraIsChecked = false;
-	var qtyInput = 0;
-	var actualQty = 0;
-	var maxQty = 10;
-	var subSum = 0;
-	var deliveryFee = 10;
-	var total = 0;
-
-	// Function to set empty cart image
-	function setEmptyCart() {
-
-		// Create the dedicated row for the empty cart element
-		$('#itemList').append('<li id="emptyCart"></li>');
-
-		// Fill the dedicated row
-		$('#emptyCart').html('<div class="order-list-img"><img src="../img/bg/empty-cart-small.png" alt="Your cart is empty"/></div><div class="order-list-details"> <h4>Your cart is empty</a><br/><small>Start adding items</small></h4> <div class="order-list-price format-price">0.00</div></div>');
-		formatPrice();
-	}
-
-	// Function to check if the cart is empty
-	function isCartEmpty() {
-
-		if ($('ul#itemList li').length == 0) {
-			return true;
-		}
-	}
-
-	// Function to update sub summary
-	function updateSubSum(id, rowId, itemPrice, actualQty) {
-
-		// Calculate subSum
-		subSum = (itemPrice * 1) * (actualQty * 1);
-
-		// Update subSum
-		$('#cartItem' + id + rowId + ' .order-list-details .order-list-price').text(subSum.toFixed(2));
-	}
-
 	// Function to update total summary
 	function updateTotal() {
+		let total = 0;
 
-		total = 0;
-
-		// Update total with prices in order list
+		// Jumlahkan semua harga produk
 		$('.order-list-price').each(function () {
-
-			total += ($(this).text().match(/[0-9.]+/g) * 1);
-
+			const hargaItem = parseInt($(this).text().replace(/[^\d]/g, '')) || 0;
+			total += hargaItem;
 		});
-		//Add delivery fee
-		total = total + (deliveryFee * 1);
 
-		// Set total
-		$('.total').val(total.toFixed(2));
-		$('.totalValue').text(total.toFixed(2));
+		// Ambil metode pengiriman
+		const deliveryOption = $('input[name="transfer"]:checked').val();
+		const deliveryFee = deliveryOption === 'delivery' ? 10000 : 0;
+		total += deliveryFee;
 
-		// If cart is empty do not calculate any cost
-		if ($('ul#itemList li#emptyCart').length > 0) {
-			total = 0;
-			$('.total').val(total.toFixed(2));
-			$('.totalValue').text(total.toFixed(2));
-		}
+		// Update tampilan total
+		$('.total').val(total);
+		$('.totalValue').text(formatRupiah(total));
+		$('#totalOrderSummary').val(total);
 
-		formatPrice();
-
+		// Optional: untuk debugging
+		// console.log('Total termasuk ongkir:', total);
 	}
 
 	// Item having options is added to cart

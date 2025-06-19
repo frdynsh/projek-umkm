@@ -259,22 +259,19 @@ require_once __DIR__ . '/Config/Config.php';
 												</div>
 											</div>
 											<!-- Cart Items End -->
-											<!-- shipping options -->
+											<!-- Shipping Method -->
 											<div class="row">
-												<div class="col-md-12 col-sm-12">
-													<!-- Option Delivery -->
-													<label class="cbx radio-wrapper no-edges">
-														<input type="radio" value="delivery" name="transfer" checked><span class="checkmark"></span>
-														<span class="radio-caption">Delivery Fee</span><span class="option-price format-price transfer">10000</span>
-													</label>
-													<!-- Option Take Away -->
-													<label class="cbx radio-wrapper no-edges">
-														<input type="radio" value="take away" name="transfer" checked><span class="checkmark"></span>
-														<span class="radio-caption">Take Away</span><span class="option-price format-price transfer">0</span>
-													</label>
+												<div class="col-md-12 col-sm-6">
+													<div class="form-group">
+														<label for="shippingMethod">Shipping Method</label>
+														<select id="shippingMethod" name="shipping_method" class="form-control" required>
+															<option value="delivery" selected>Delivery</option>
+															<option value="pickup">Pickup (Take Away)</option>
+														</select>
+													</div>
 												</div>
 											</div>
-											<!-- shipping options -->
+											<!-- shipping Method -->
 											<!-- Total -->
 											<div class="row total-container">
 												<div class="col-md-12 p-0">
@@ -334,6 +331,18 @@ require_once __DIR__ . '/Config/Config.php';
 														<div class="form-group">
 															<label for="addressCashPayment">Delivery Address</label>
 															<input id="addressCashPayment" class="form-control" name="address" type="text" data-parsley-pattern="^[,.a-zA-Z0-9\s.]+$" required />
+														</div>
+													</div>
+												</div>
+												<!-- Delivery Zone -->
+												<div class="row" id="zoneContainer">
+													<div class="col-md-12 col-sm-6">
+														<div class="form-group">
+															<label for="deliveryZone">Delivery Zone</label>
+															<select id="deliveryZone" name="delivery_zone" class="form-control" required>
+																<option value="">-- Select Zone --</option>
+																<!-- Options dimuat dari database -->
+															</select>
 														</div>
 													</div>
 												</div>
