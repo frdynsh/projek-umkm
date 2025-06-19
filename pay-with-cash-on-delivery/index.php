@@ -594,15 +594,17 @@ require_once __DIR__ . '/Config/Config.php';
 	<!-- Modal Options End -->
 
 
-	<!-- Modal Details for Item 01 -->
-	<div id="modalDetailsItem01" class="modal-popup zoom-anim-dialog mfp-hide">
+	<!-- Modal Details Start -->
+	<div id="modalDetailsItem<?= $id ?>" class="modal-popup zoom-anim-dialog mfp-hide">
 		<div class="small-dialog-header">
-			<h3>Tulang Rangu</h3>
+			<h3><?= $name ?></h3>
 		</div>
 		<div class="content pb-1">
-			<figure><img src="../img/gallery/grid-items-large/01.jpg" alt="" class="img-fluid"></figure>
+			<figure>
+				<img src="<?= $imageUrl ?>" alt="<?= $name ?>" class="img-fluid">
+			</figure>
 			<h6 class="mb-1">Varian</h6>
-			<p>Original, Chili oil, Sambal Hijau</p>
+			<p><?= $desc ?></p>
 		</div>
 		<div class="footer">
 			<div class="row">
@@ -612,67 +614,7 @@ require_once __DIR__ . '/Config/Config.php';
 			</div>
 		</div>
 	</div>
-	<!-- Modal Details for Item 1 End -->
-
-	<!-- Modal Details for Item 02 -->
-	<div id="modalDetailsItem02" class="modal-popup zoom-anim-dialog mfp-hide">
-		<div class="small-dialog-header">
-			<h3>Dakbal</h3>
-		</div>
-		<div class="content pb-1">
-			<figure><img src="../img/gallery/grid-items-large/02.jpg" alt="" class="img-fluid"></figure>
-			<h6 class="mb-1">Varian</h6>
-			<p>Original, Chili oil, Sambal Hijau</p>
-		</div>
-		<div class="footer">
-			<div class="row">
-				<div class="col-4 pr-0">
-					<button type="button" class="btn-modal-close">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Modal Details for Item 02 End -->
-
-	<!-- Modal Details for Item 03 -->
-	<div id="modalDetailsItem03" class="modal-popup zoom-anim-dialog mfp-hide">
-		<div class="small-dialog-header">
-			<h3>Ceker Mercon</h3>
-		</div>
-		<div class="content pb-1">
-			<figure><img src="../img/gallery/grid-items-large/03.jpg" alt="" class="img-fluid"></figure>
-			<h6 class="mb-1">Varian</h6>
-			<p>Original, Chili oil, Sambal Hijau</p>
-		</div>
-		<div class="footer">
-			<div class="row">
-				<div class="col-4 pr-0">
-					<button type="button" class="btn-modal-close">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Modal Details for Item 03 End -->
-
-	<!-- Modal Details for Item 04 -->
-	<div id="modalDetailsItem04" class="modal-popup zoom-anim-dialog mfp-hide">
-		<div class="small-dialog-header">
-			<h3>Dimsum Tulang Rangu</h3>
-		</div>
-		<div class="content pb-1">
-			<figure><img src="../img/gallery/grid-items-large/04.jpg" alt="" class="img-fluid"></figure>
-			<h6 class="mb-1">Varian</h6>
-			<p>Original, Chili oil, Sambal Hijau</p>
-		</div>
-		<div class="footer">
-			<div class="row">
-				<div class="col-4 pr-0">
-					<button type="button" class="btn-modal-close">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Modal Details for Item 04 End -->
+	<!-- Modal Details End -->
 
 	<!-- Back to top button -->
 	<div id="toTop"><i class="icon icon-chevron-up"></i></div>
