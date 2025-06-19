@@ -37,11 +37,15 @@ include '../controllers/controller_add_product.php';
                 <label>Label <small>(optional)</small></label>
                 <input type="text" name="label" class="form-control">
             </div>
+            <div class="mb-3">
+                <label>Stock</label>
+                <input type="number" name="stock" class="form-control" required min="0" value="0">
+            </div>
             <button type="submit" class="btn btn-primary">Add Product</button>
         </form>
 
         <!-- Daftar Produk -->
-        <h4>Existing Products</h4>
+        <h4>Produk Yang Tersedia</h4>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -49,6 +53,7 @@ include '../controllers/controller_add_product.php';
                     <th>Image</th>
                     <th>Name</th>
                     <th>Label</th>
+                    <th>Stock</th>
                     <th>Created</th>
                 </tr>
             </thead>
@@ -65,6 +70,7 @@ include '../controllers/controller_add_product.php';
                     </td>
                     <td><?= htmlspecialchars($product['name']) ?></td>
                     <td><?= htmlspecialchars($product['label'] ?? '-') ?></td>
+                    <td><?= (int)$product['stock'] ?></td>
                     <td><?= htmlspecialchars($product['created_at']) ?></td>
                 </tr>
                 <?php endforeach; ?>

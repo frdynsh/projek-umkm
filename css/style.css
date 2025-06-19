@@ -165,17 +165,14 @@ button:focus {
 
 .pl-15 {
 	padding-left: 15px;
-	;
 }
 
 .pr-10 {
 	padding-right: 10px;
-	;
 }
 
 .pr-15 {
 	padding-right: 15px;
-	;
 }
 
 /* Modal Alert
@@ -1125,7 +1122,6 @@ a.btn-2:hover, .btn-2:hover {
 
 .faq-accordion .card-header h4 a i.indicator {
 	font-size: 1.125rem;
-	font-size: 1.125rem;
 	font-weight: normal;
 	float: right;
 	color: #F50057;
@@ -1440,7 +1436,6 @@ input.qtyminus {
 	margin: 0;
 	font-weight: 500;
 	color: #fff;
-	margin: 0;
 	padding: 0;
 	line-height: 1;
 }

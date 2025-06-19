@@ -28,17 +28,6 @@
 	});
 
 	// =====================================================
-	// LAZY LOAD
-	// =====================================================
-	if ($('.lazy').length > 0) {
-
-		new LazyLoad({
-			elements_selector: '.lazy'
-		});
-
-	}
-
-	// =====================================================
 	// BACK TO TOP BUTTON
 	// =====================================================
 	function scrollToTop() {
@@ -277,16 +266,13 @@
 		mainClass: 'my-mfp-zoom-in',
 		callbacks: {
 			close: function () {
-				resetModalOptions();
+			resetModalOptions();
 			}
 		}
-
 	});
 
 	$('.btn-modal-close').on('click', function () {
-
 		$.magnificPopup.close();
-
 	});
 
 	// =====================================================

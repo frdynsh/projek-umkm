@@ -20,7 +20,7 @@ function isActive($page) {
         </li>
         <li>
             <a href="product_option_manage.php" class="nav-link <?= isActive('product_option.php') ?>">
-                <i class="fas fa-tags me-2"></i> Product Option
+                <i class="fas fa-tags me-2"></i> Product Variants
             </a>
         </li>
         <li>
@@ -35,7 +35,7 @@ function isActive($page) {
         </li>
         <li>
             <a href="register_user_view.php" class="nav-link <?= isActive('register_internal.php') ?>">
-                <i class="fas fa-user-plus me-2"></i> Register Admin/Employee
+                <i class="fas fa-user-plus me-2"></i> Register Karyawan
             </a>
         </li>
     </ul>

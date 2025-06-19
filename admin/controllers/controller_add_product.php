@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
     $description = $_POST['description'] ?? '';
     $label = $_POST['label'] ?? null;
+    $stock = isset($_POST['stock']) ? (int)$_POST['stock'] : 0;
     $imagePath = '';
 
     // Handle image upload
@@ -27,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Insert into products table
-    $stmt = $conn->prepare("INSERT INTO products (name, description, image_path, label, created_at) VALUES (?, ?, ?, ?, NOW())");
-    $stmt->bind_param("ssss", $name, $description, $imagePath, $label);
+    $stmt = $conn->prepare("INSERT INTO products (name, description, image_path, label, stock, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+    $stmt->bind_param("sss si", $name, $description, $imagePath, $label, $stock);
     $stmt->execute();
     $stmt->close();
 
