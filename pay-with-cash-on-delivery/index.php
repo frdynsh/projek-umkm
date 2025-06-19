@@ -520,6 +520,7 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 												</div>
 												<div class="row">
 													<div class="col-md-12">
+														<input type="hidden" name="payment_method" value="COD"> 
 														<button type="submit" name="submit" id="submitOrder" class="btn-form-func">
 															<span class="btn-form-func-content">Submit</span>
 															<span class="icon"><i class="fa fa-check" aria-hidden="true"></i></span>
@@ -716,9 +717,6 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 	<script src="../vendor/scrollreveal/js/scrollreveal.min.js"></script>
 	<script src="../vendor/lazyload/js/lazyload.min.js"></script>
 	<script src="../vendor/sticky-kit/js/sticky-kit.min.js"></script>
-
-	<!-- Order Javascript File -->
-	<script src="assets/js/order.js"></script>
 
 	<!-- Main Javascript File -->
 	<script src="../js/scripts.js"></script>
