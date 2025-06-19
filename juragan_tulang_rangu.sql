@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 19, 2025 at 12:09 PM
+-- Generation Time: Jun 19, 2025 at 02:45 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.16
 
@@ -57,9 +57,8 @@ CREATE TABLE `carts` (
 --
 
 INSERT INTO `carts` (`id`, `user_id`, `product_id`, `option_id`, `extra_ids`, `quantity`, `created_at`, `updated_at`) VALUES
-(31, 'CSTJTR1', 1, 2, '', 8, '2025-06-19 11:42:58', '2025-06-19 19:08:21'),
-(32, 'CSTJTR1', 1, 1, '', 4, '2025-06-19 11:51:18', '2025-06-19 19:05:10'),
-(33, 'CSTJTR1', 1, 3, '', 2, '2025-06-19 11:52:25', '2025-06-19 19:04:42');
+(38, 'CSTJTR1', 1, 2, '4', 1, '2025-06-19 12:51:19', '2025-06-19 19:51:19'),
+(40, 'CSTJTR1', 1, 2, '', 3, '2025-06-19 14:37:39', '2025-06-19 21:37:42');
 
 -- --------------------------------------------------------
 
@@ -75,6 +74,45 @@ CREATE TABLE `daily_financial_records` (
   `total_income` int GENERATED ALWAYS AS ((`product_income` + `delivery_income`)) STORED,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `delivery_zones`
+--
+
+CREATE TABLE `delivery_zones` (
+  `id` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `fee` int NOT NULL,
+  `active` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `delivery_zones`
+--
+
+INSERT INTO `delivery_zones` (`id`, `name`, `city`, `fee`, `active`, `created_at`) VALUES
+(1, 'Telukjambe Timur', 'Karawang', 5000, 1, '2025-06-19 13:27:29'),
+(2, 'Telukjambe Barat', 'Karawang', 7000, 1, '2025-06-19 13:27:29'),
+(3, 'Karawang Barat', 'Karawang', 8000, 1, '2025-06-19 13:27:29'),
+(4, 'Karawang Timur', 'Karawang', 8000, 1, '2025-06-19 13:27:29'),
+(5, 'Cikampek', 'Karawang', 12000, 1, '2025-06-19 13:27:29'),
+(6, 'Cilamaya', 'Karawang', 15000, 1, '2025-06-19 13:27:29'),
+(7, 'Purwakarta Kota', 'Purwakarta', 20000, 1, '2025-06-19 13:27:29'),
+(8, 'Campaka', 'Purwakarta', 21000, 1, '2025-06-19 13:27:29'),
+(9, 'Cikarang Barat', 'Bekasi', 18000, 1, '2025-06-19 13:27:29'),
+(10, 'Tambun Selatan', 'Bekasi', 17000, 1, '2025-06-19 13:27:29'),
+(11, 'Subang Kota', 'Subang', 22000, 1, '2025-06-19 13:27:29'),
+(12, 'Pagaden', 'Subang', 21000, 1, '2025-06-19 13:27:29'),
+(13, 'Cibitung', 'Bekasi', 19000, 1, '2025-06-19 13:27:29'),
+(14, 'Bekasi Selatan', 'Bekasi', 23000, 1, '2025-06-19 13:27:29'),
+(15, 'Jakarta Barat', 'Jakarta', 25000, 1, '2025-06-19 13:27:29'),
+(16, 'Jakarta Timur', 'Jakarta', 25000, 1, '2025-06-19 13:27:29'),
+(17, 'Bandung Kota', 'Bandung', 27000, 1, '2025-06-19 13:27:29'),
+(18, 'Luar Zona / Jabodetabek', 'Luar Area', 30000, 1, '2025-06-19 13:27:29');
 
 -- --------------------------------------------------------
 
@@ -141,7 +179,8 @@ CREATE TABLE `transactions` (
   `delivery_method` enum('Delivery','Pickup') NOT NULL,
   `delivery_fee` int DEFAULT '0',
   `total_price` int NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `delivery_zone_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -199,6 +238,12 @@ ALTER TABLE `daily_financial_records`
   ADD UNIQUE KEY `record_date` (`record_date`);
 
 --
+-- Indexes for table `delivery_zones`
+--
+ALTER TABLE `delivery_zones`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
@@ -216,7 +261,8 @@ ALTER TABLE `product_variants`
 --
 ALTER TABLE `transactions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `fk_delivery_zone` (`delivery_zone_id`);
 
 --
 -- Indexes for table `users`
@@ -240,13 +286,19 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `daily_financial_records`
 --
 ALTER TABLE `daily_financial_records`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `delivery_zones`
+--
+ALTER TABLE `delivery_zones`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -288,6 +340,7 @@ ALTER TABLE `product_variants`
 -- Constraints for table `transactions`
 --
 ALTER TABLE `transactions`
+  ADD CONSTRAINT `fk_delivery_zone` FOREIGN KEY (`delivery_zone_id`) REFERENCES `delivery_zones` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
