@@ -1,7 +1,8 @@
 <?php
 session_start();
-include '../../db/db.php';
+include '../../database/db.php';
 
+// protect the admin panel 
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
   header("Location: ../../login.php");
   exit();
@@ -53,12 +54,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $stmt->bind_param("sssssss", $custom_id, $username, $email, $hashed_password, $phone, $address, $role);
 
       if ($stmt->execute()) {
+        $newUserId = $conn->insert_id;
+    
+        // Ambil data user yang baru diregistrasi
+        $getUser = $conn->prepare("SELECT id, username, email, phone, address, role FROM users WHERE id = ?");
+        $getUser->bind_param("i", $newUserId);
+        $getUser->execute();
+        $result = $getUser->get_result();
+        $newUser = $result->fetch_assoc();
+    
+        // Simpan ke session
+        $_SESSION['user'] = [
+          'id' => $newUser['id'],
+          'username' => $newUser['username'],
+          'email' => $newUser['email'],
+          'phone' => $newUser['phone'],
+          'address' => $newUser['address'],
+          'role' => $newUser['role']
+        ];
+        
+    
+        // Set pesan sukses
         $message = ucfirst($role) . " successfully registered.";
         $type = "success";
+    
+        // echo "<pre>";
+        // print_r($_SESSION['user']);
+        // echo "</pre>";
+        // exit;
+
+        // Opsional: redirect ke halaman profil
+        header("Location: admin/views/profil.php");
+        exit();
       } else {
         $message = "Database error: " . $stmt->error;
         $type = "error";
-      }
+      }     
     }
     $stmt->close();
   }

@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../controllers/controller_add_product.php';
 ?>
 <!DOCTYPE html>
@@ -13,6 +14,20 @@ include '../controllers/controller_add_product.php';
 <div class="d-flex">
     <?php include '../includes/sidebar.php'; ?>
     <div class="p-4" style="margin-left:250px; width:100%;">
+
+    <!-- dropdown profile -->
+    <?php if (isset($_SESSION['user'])): ?>
+    <div class="dropdown text-end mb-3">
+        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+             <i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['user']['username']) ?>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="profil.php">Profil</a></li>
+            <li><hr class="dropdown-divider"></li>
+        </ul>
+    </div>
+    <?php endif; ?>
+
         <h2 class="mb-4">Add New Product</h2>
 
         <?php if (isset($_GET['success'])): ?>
@@ -72,6 +87,17 @@ include '../controllers/controller_add_product.php';
                     <td><?= htmlspecialchars($product['label'] ?? '-') ?></td>
                     <td><?= (int)$product['stock'] ?></td>
                     <td><?= htmlspecialchars($product['created_at']) ?></td>
+                    <td>
+                        <a href="edit_product.php?id=<?= $product['id'] ?>" class="btn btn-warning btn-sm me-1">
+                            <i class="fa fa-edit"></i> Edit
+                        </a>
+                        <form method="POST" action="../controllers/controller_delete_product.php" onsubmit="return confirm('Yakin ingin menghapus produk ini?');" style="display:inline;">
+                            <input type="hidden" name="id" value="<?= $product['id'] ?>">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fa fa-trash"></i> Hapus
+                            </button>
+                        </form>
+                    <td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -79,5 +105,6 @@ include '../controllers/controller_add_product.php';
 
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

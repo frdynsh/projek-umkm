@@ -1,12 +1,10 @@
 <?php
 session_start();
-include '../../db/db.php';
+include '../../database/db.php';
 include '../includes/auth_check.php';
 
-// Ambil semua produk
 $product_result = $conn->query("SELECT id, name FROM products");
 
-// Ambil semua varian untuk validasi duplicate
 $existing_variants = [];
 $variant_check = $conn->query("SELECT product_id, variant, category FROM product_variants");
 while ($row = $variant_check->fetch_assoc()) {
@@ -86,31 +84,43 @@ while ($row = $variant_check->fetch_assoc()) {
                         <th>Varian</th>
                         <th>Category</th>
                         <th>Price</th>
+                        <th>Action</th> 
                     </tr>
                 </thead>
-                <tbody>
-                <?php
-                    $variant_query = "
-                        SELECT p.name AS product_name, v.variant, v.category, v.price
-                        FROM product_variants v
-                        JOIN products p ON v.product_id = p.id
-                        ORDER BY v.product_id, v.category, v.id
-                    ";
-                    $variants = $conn->query($variant_query);
-
-                    while ($v = $variants->fetch_assoc()):
-                ?>
-                    <tr>
-                        <td><?= htmlspecialchars($v['product_name']) ?></td>
-                        <td><?= htmlspecialchars($v['variant']) ?></td>
-                        <td><?= htmlspecialchars($v['category']) ?></td>
-                        <td>Rp <?= number_format($v['price'], 0, ',', '.') ?></td>
-                    </tr>
-                <?php endwhile; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
+          <tbody>
+            <?php
+            $variant_query = "
+            SELECT v.id, p.name AS product_name, v.variant, v.category, v.price
+            FROM product_variants v
+            JOIN products p ON v.product_id = p.id
+            ORDER BY v.product_id, v.category, v.id
+            ";
+            $variants = $conn->query($variant_query);
+            while ($v = $variants->fetch_assoc()):
+            ?>
+            <tr>
+                <td><?= htmlspecialchars($v['product_name']) ?></td>
+                <td><?= htmlspecialchars($v['variant']) ?></td>
+                <td><?= htmlspecialchars($v['category']) ?></td>
+                <td>Rp <?= number_format($v['price'], 0, ',', '.') ?></td>
+                <td>
+                    <a href="edit_variant.php?id=<?= $v['id'] ?>" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <form action="../controllers/product_variants_controller.php" method="POST" style="display:inline;">
+                        <input type="hidden" name="variant_id" value="<?= $v['id'] ?>">
+                        <button type="submit" name="delete_variant" class="btn btn-sm btn-danger" 
+                        onclick="return confirm('Yakin ingin menghapus varian ini?')">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                </form>
+             </td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+</div>
+</div>
 
     <script>
         const existingVariants = <?= json_encode($existing_variants) ?>;

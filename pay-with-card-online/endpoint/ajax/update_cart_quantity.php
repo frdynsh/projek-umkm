@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/../../../db/db.php';
+require_once __DIR__ . '/../../../database/db.php';
 
 $cartId = $_POST['cart_id'] ?? null;
 $quantity = (int) ($_POST['quantity'] ?? 0);

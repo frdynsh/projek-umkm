@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/../../../db/db.php';
+require_once __DIR__ . '/../../../database/db.php';
 
 header('Content-Type: application/json');
 
@@ -39,7 +39,7 @@ while ($row = $result->fetch_assoc()) {
     $item = [
         'cart_id' => $row['cart_id'],
         'name' => $row['name'],
-        'image' => '/projek-umkm/uploads/' . str_replace('uploads/', '', $row['image_path']),
+        'image' => '/' . explode('/', $_SERVER['SCRIPT_NAME'])[1] . '/uploads/' . basename($row['image_path']),
         'variant' => $row['variant'],
         'price' => (int)$row['price'],
         'quantity' => (int)$row['quantity'],

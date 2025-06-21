@@ -1,9 +1,10 @@
 <?php
+session_start();
 
-use Foodboard\Config;
+use JuraganTulangRangu\Config;
 
 require_once __DIR__ . '/Config/Config.php';
-require_once __DIR__ . '/../db/db.php'; 
+require_once __DIR__ . '/../database/db.php'; 
 
 // Ambil semua nama produk unik yang sudah punya varian 'medium' dan harga valid
 $namaProdukList = [];
@@ -87,17 +88,35 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 				<div class="row">
 					<div class="col-lg-3 col-6">
 						<div id="logo">
-							<h1><a href="../index.html" title="Tulang Rangu">Juragan Tulang Rangu</a></h1>
+							<h1><a href="../index.php" title="Tulang Rangu">Juragan Tulang Rangu</a></h1>
 						</div>
 					</div>
 					<div class="col-lg-9 col-6">
 						<ul id="menuIcons">
-							<li><a href="../db/login.php"><i class="fas fa-user"></i></a></li>
+							<?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'customer'): ?>
+							<li class="nav-item dropdown d-flex align-items-center">
+							<a class="nav-link dropdown-toggle d-flex align-items-center gap-3" 
+								href="#" 
+								id="userDropdown" 
+								role="button" 
+								data-bs-toggle="dropdown" 
+								aria-expanded="false"
+								style="font-weight: 500; font-size: 16px; color: #800040;">
+								<i class="fas fa-user me-1 margin-right: 12px;" style="font-size: 18px;"></i><?= htmlspecialchars($_SESSION['user']['username']) ?>
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="userDropdown">
+								<li><a class="dropdown-item" href="../database/profil.php">Profile</a></li>
+								<li><a class="dropdown-item" href="../database/logout.php">Logout</a></li>
+							</ul>
+							</li>
+							<?php else: ?>
+								<li><a href="../database/login.php"><i class="fas fa-user"></i></a></li>
+							<?php endif; ?>
 						</ul>
 						<!-- Menu -->
 						<nav id="menu" class="main-menu">
 							<ul>
-								<li><span><a href="../index.html">Home</a></span></li>
+								<li><span><a href="../index.php">Home</a></span></li>
 								<li>
 									<span><a href="#">Order <i class="fa fa-chevron-down"></i></a></span>
 									<ul>
@@ -109,8 +128,8 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 										</li>
 									</ul>
 								</li>
-								<li><span><a href="../faq.html">Faq</a></span></li>
-								<li><span><a href="../contacts.html">Contacts</a></span></li>
+								<li><span><a href="../faq.php">Faq</a></span></li>
+								<li><span><a href="../contacts.php">Contacts</a></span></li>
 							</ul>
 						</nav>
 						<!-- Menu End -->
@@ -166,7 +185,7 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 							<!-- Grid Items -->
 							<div class="row grid">
 								<?php
-								require_once __DIR__ . '/../db/db.php';
+								require_once __DIR__ . '/../database/db.php';
 
 								// Ambil semua produk dan salah satu varian size pertama (jika ada)
 								$sql = "
@@ -183,7 +202,7 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 
 								$result = $conn->query($sql);
 								$index = 1;
-								$basePath = '/projek-umkm/uploads/';
+								$basePath = dirname($_SERVER['SCRIPT_NAME'], 2) . '/uploads/';
 
 								if ($result && $result->num_rows > 0):
 									while ($row = $result->fetch_assoc()):
@@ -285,7 +304,7 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 
 							<!-- Modal Options Start -->
 							<?php
-							require_once __DIR__ . '/../db/db.php';
+							require_once __DIR__ . '/../database/db.php';
 
 							$sql = "SELECT * FROM product_variants ORDER BY product_id, category, id";
 							$result = $conn->query($sql);
@@ -380,7 +399,7 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 							<!-- Order Container -->
 							<div id="orderContainer" class="theiaStickySidebar">
 								<!-- Form -->
-								<form method="POST" id="orderForm" name="orderForm" onsubmit="return confirmGuestOrder(event);">
+								<form method="POST" id="orderForm" name="orderForm" action="endpoint/ajax/create-order.php">
 
 									<!-- Step 1: Order Summary -->
 									<div id="#orderSummaryStep" class="step">
@@ -441,13 +460,13 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 										<div class="order-header">
 											<h3>Order Summary 2/2</h3>
 										</div>
-										<div id="personalDetails" data-return-url='<?php echo Config::THANKYOU_URL; ?>' data-currency='<?php echo Config::CURRENCY; ?>'>
+										<div id="personalDetails">
 											<div class="order-body">
 												<div class="row">
 													<div class="col-md-12">
 														<div class="form-group">
 															<label for="userNameCashPayment">Full Name</label>
-															<input id="userNameCashPayment" class="form-control" name="username" type="text" data-parsley-pattern="^[a-zA-Z\s.]+$" required />
+															<input id="userNameCashPayment" class="form-control" name="name" type="text" data-parsley-pattern="^[a-zA-Z\s.]+$" required />
 														</div>
 													</div>
 												</div>
@@ -480,7 +499,7 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 													<div class="col-md-12 col-sm-6">
 														<div class="form-group">
 															<label for="deliveryZone">Delivery Zone</label>
-															<select id="deliveryZone" name="delivery_zone" class="form-control" required>
+															<select id="deliveryZone" name="delivery_zone" class="form-control">
 																<option value="">-- Select Zone --</option>
 																<!-- Options dimuat dari database -->
 															</select>
@@ -568,16 +587,16 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 					<div class="col-md-3">
 						<h5 class="footer-heading">Menu Links</h5>
 						<ul class="list-unstyled nav-links">
-							<li><i class="fa fa-angle-right"></i> <a href="index.html" class="footer-link">Home</a></li>
-							<li><i class="fa fa-angle-right"></i> <a href="faq.html" class="footer-link">FAQ</a></li>
-							<li><i class="fa fa-angle-right"></i> <a href="contacts.html" class="footer-link">Contacts</a></li>
+							<li><i class="fa fa-angle-right"></i> <a href="../index.php" class="footer-link">Home</a></li>
+							<li><i class="fa fa-angle-right"></i> <a href="../faq.php" class="footer-link">FAQ</a></li>
+							<li><i class="fa fa-angle-right"></i> <a href="../contacts.php" class="footer-link">Contacts</a></li>
 						</ul>
 					</div>
 					<div class="col-md-3">
 						<h5 class="footer-heading">Order</h5>
 						<ul class="list-unstyled nav-links">
-							<li><i class="fa fa-angle-right"></i> <a href="pay-with-card-online/index.php" class="footer-link">Pay online</a></li>
-							<li><i class="fa fa-angle-right"></i> <a href="pay-with-cash-on-delivery/index.php" class="footer-link">Pay with cash on delivery</a></li>
+							<li><i class="fa fa-angle-right"></i> <a href="../pay-with-card-online/index.php" class="footer-link">Pay online</a></li>
+							<li><i class="fa fa-angle-right"></i> <a href="../pay-with-cash-on-delivery/index.php" class="footer-link">Pay with cash on delivery</a></li>
 						</ul>
 					</div>
 					<div class="col-md-4">
@@ -720,6 +739,7 @@ if ($resultNamaProduk && $resultNamaProduk->num_rows > 0) {
 
 	<!-- Main Javascript File -->
 	<script src="../js/scripts.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -14,8 +14,19 @@ function isActive($page) {
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
+            <a href="../../index.php" class="nav-link <?= isActive('index.php') ?>">
+                <i class="fas fa-home"></i> Main Page
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="view_add_product.php" class="nav-link <?= isActive('admin.php') ?>">
                 <i class="fas fa-box me-2"></i> Menu
+            </a>
+        </li>
+        </li>
+        <li class="nav-item">
+            <a href="view_add_product.php" class="nav-link <?= isActive('index.php') ?>">
+                <i class="fas fa-box me-2"></i> Pengumuman Toko
             </a>
         </li>
         <li>
@@ -24,13 +35,13 @@ function isActive($page) {
             </a>
         </li>
         <li>
-            <a href="financial_record.php" class="nav-link <?= isActive('financial_record.php') ?>">
-                <i class="fas fa-file-invoice-dollar me-2"></i> Pencatatan Keuangan
+            <a href="history.php" class="nav-link <?= isActive('transaction_history.php') ?>">
+                <i class="fas fa-history me-2"></i> History Transaksi
             </a>
         </li>
         <li>
-            <a href="transaction_history.php" class="nav-link <?= isActive('transaction_history.php') ?>">
-                <i class="fas fa-history me-2"></i> History Transaksi
+            <a href="finance_history.php" class="nav-link <?= isActive('transaction_history.php') ?>">
+                <i class="fas fa-history me-2"></i> Pencatatan Keuangan
             </a>
         </li>
         <li>
@@ -41,7 +52,7 @@ function isActive($page) {
     </ul>
     <hr>
     <div>
-        <a href="../../db/logout.php" class="btn btn-outline-danger w-100">
+        <a href="../../database/logout.php" class="btn btn-outline-danger w-100">
             <i class="fas fa-sign-out-alt me-1"></i> Logout
         </a>
     </div>
