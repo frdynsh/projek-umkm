@@ -1,6 +1,8 @@
 <?php
 
-namespace Foodboard;
+namespace JuraganTulangRangu;
+
+use JuraganTulangRangu\Config;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -16,6 +18,10 @@ class CheckoutService
 
         $mail = new PHPMailer(true); // ✅ Perubahan: gunakan true agar support try-catch
 
+        if (!is_array($recipientBCCArr)) {
+            $recipientBCCArr = array_map('trim', explode(',', $recipientBCCArr));
+        }
+        
         try {
             // ✅ Konfigurasi SMTP ditambahkan
             $mail->isSMTP();
@@ -33,15 +39,21 @@ class CheckoutService
 
             // ✅ Penerima
             foreach ($recipientArr as $recipient) {
-                $mail->AddAddress($recipient);
+                if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                    $mail->addAddress($recipient);
+                }
             }
 
-            foreach ($recipientCCArr as $ccRecipient) {
-                $mail->AddCC($ccRecipient);
+            foreach ($recipientCCArr as $cc) {
+                if (filter_var($cc, FILTER_VALIDATE_EMAIL)) {
+                    $mail->addCC($cc);
+                }
             }
 
-            if (!empty($recipientBCCArr)) {
-                $mail->AddBCC($recipientBCCArr);
+            foreach ($recipientBCCArr as $bcc) {
+                if (filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
+                    $mail->addBCC($bcc);
+                }
             }
 
             // ✅ Set email
