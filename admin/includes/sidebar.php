@@ -19,33 +19,33 @@ function isActive($page) {
             </a>
         </li>
         <li class="nav-item">
-            <a href="view_add_product.php" class="nav-link <?= isActive('admin.php') ?>">
+            <a href="view_add_product.php" class="nav-link <?= isActive('view_add_product.php') ?>">
                 <i class="fas fa-box me-2"></i> Menu
             </a>
         </li>
         </li>
         <li class="nav-item">
-            <a href="view_add_product.php" class="nav-link <?= isActive('index.php') ?>">
+            <a href="view_notif.php" class="nav-link <?= isActive('view_notif.php') ?>">
                 <i class="fas fa-box me-2"></i> Pengumuman Toko
             </a>
         </li>
         <li>
-            <a href="product_variants_manage.php" class="nav-link <?= isActive('product_option.php') ?>">
+            <a href="product_variants_manage.php" class="nav-link <?= isActive('product_variants_manage.php') ?>">
                 <i class="fas fa-tags me-2"></i> Product Variants
             </a>
         </li>
         <li>
-            <a href="history.php" class="nav-link <?= isActive('transaction_history.php') ?>">
+            <a href="transaction_history.php" class="nav-link <?= isActive('transaction_history.php') ?>">
                 <i class="fas fa-history me-2"></i> History Transaksi
             </a>
         </li>
         <li>
-            <a href="finance_history.php" class="nav-link <?= isActive('transaction_history.php') ?>">
+            <a href="finance_record.php" class="nav-link <?= isActive('finance_record.php') ?>">
                 <i class="fas fa-history me-2"></i> Pencatatan Keuangan
             </a>
         </li>
         <li>
-            <a href="register_user_view.php" class="nav-link <?= isActive('register_internal.php') ?>">
+            <a href="register_user_view.php" class="nav-link <?= isActive('register_user_view.php') ?>">
                 <i class="fas fa-user-plus me-2"></i> Register Karyawan
             </a>
         </li>

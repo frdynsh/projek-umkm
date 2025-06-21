@@ -24,3 +24,10 @@
 [2025-06-20 08:04:58] VALUES DEBUG: ["INV\/20250620\/0008","CSTJTR1","randi","62859121392342","frdynsh11@gmail.com","Jakarta - Zone: Jakarta Barat Jakarta","enak","Online","Delivery",25000,45000,15]
 [2025-06-20 08:04:58] 📈 Rekap harian DITAMBAH untuk 2025-06-20: Produk=20000, Ongkir=25000
 [2025-06-20 08:05:05] UltraMsg Response: {"sent":"true","message":"ok","id":19}
+[2025-06-21 13:31:38] DEBUG: $_SESSION[user][id] = ADMNJTR2
+[2025-06-21 13:31:38] 🛍️ Pickup dipilih, fee di-set 0 dan zone_id diabaikan
+[2025-06-21 13:31:38] 🧪 DATABASE AKTIF: juragan_tulang_rangu
+[2025-06-21 13:31:38] 🧪 Apakah CSTJTR1 ditemukan? YA
+[2025-06-21 13:31:38] VALUES DEBUG: ["INV\/20250621\/0001","ADMNJTR2","ferdi","62859121392342","frdynsh11@gmail.com","Cirebon barat","enak","Online","Pickup",0,10000,null]
+[2025-06-21 13:31:38] 📊 Rekap harian DIBUAT untuk 2025-06-21: Produk=10000, Ongkir=0
+[2025-06-21 13:31:43] UltraMsg Response: {"sent":"true","message":"ok","id":20}
