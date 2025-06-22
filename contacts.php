@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +9,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="description" content="Guide to ordering food with online payment">
 	<meta name="author" content="UWS">
-	<title>Juragan Tulang Rangu Karawang</title>
+	<title>Contacts - Juragan Tulang Rangu Karawang</title>
 
 	<!-- Favicon -->
 	<link href="img/logo.svg" rel="shortcut icon">
@@ -59,18 +61,35 @@
 				<div class="row">
 					<div class="col-lg-3 col-6">
 						<div id="logo">
-							<h1><a href="index.html" title="logo">Juragan Tulang Rangu</a></h1>
+							<h1><a href="index.php" title="logo">Juragan Tulang Rangu</a></h1>
 						</div>
 					</div>
 					<div class="col-lg-9 col-6">
 						<ul id="menuIcons">
-							<li><a href="#"><i class="fas fa-sign-in"></i></a></li>
-							<li><a href="#"><i class="fas fa-user-plus"></i></a></li>
+							<?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'customer'): ?>
+							<li class="nav-item dropdown d-flex align-items-center">
+							<a class="nav-link dropdown-toggle d-flex align-items-center gap-3" 
+								href="#" 
+								id="userDropdown" 
+								role="button" 
+								data-bs-toggle="dropdown" 
+								aria-expanded="false"
+								style="font-weight: 500; font-size: 16px; color: #800040;">
+								<i class="fas fa-user me-1 margin-right: 12px;" style="font-size: 18px;"></i><?= htmlspecialchars($_SESSION['user']['username']) ?>
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="userDropdown">
+								<li><a class="dropdown-item" href="database/profil.php">Profile</a></li>
+								<li><a class="dropdown-item" href="database/logout.php">Logout</a></li>
+							</ul>
+							</li>
+							<?php else: ?>
+								<li><a href="database/login.php"><i class="fas fa-user"></i></a></li>
+							<?php endif; ?>
 						</ul>
 						<!-- Menu -->
 						<nav id="menu" class="main-menu">
 							<ul>
-								<li><span><a href="index.html">Home</a></span></li>
+								<li><span><a href="index.php">Home</a></span></li>
 								<li>
 									<span><a href="#">Order <i class="fa fa-chevron-down"></i></a></span>
 									<ul>
@@ -82,8 +101,8 @@
 										</li>
 									</ul>
 								</li>
-								<li><span><a href="faq.html">Faq</a></span></li>
-								<li><span><a href="contacts.html">Contacts</a></span></li>
+								<li><span><a href="faq.php">Faq</a></span></li>
+								<li><span><a href="contacts.php">Contacts</a></span></li>
 							</ul>
 						</nav>
 						<!-- Menu End -->
@@ -159,9 +178,9 @@
 					<div class="col-md-3">
 						<h5 class="footer-heading">Menu Links</h5>
 						<ul class="list-unstyled nav-links">
-							<li><i class="fa fa-angle-right"></i> <a href="index.html" class="footer-link">Home</a></li>
-							<li><i class="fa fa-angle-right"></i> <a href="faq.html" class="footer-link">FAQ</a></li>
-							<li><i class="fa fa-angle-right"></i> <a href="contacts.html" class="footer-link">Contacts</a></li>
+							<li><i class="fa fa-angle-right"></i> <a href="index.php" class="footer-link">Home</a></li>
+							<li><i class="fa fa-angle-right"></i> <a href="faq.php" class="footer-link">FAQ</a></li>
+							<li><i class="fa fa-angle-right"></i> <a href="contacts.php" class="footer-link">Contacts</a></li>
 						</ul>
 					</div>
 					<div class="col-md-3">
@@ -174,7 +193,7 @@
 					<div class="col-md-4">
 						<h5 class="footer-heading">Contacts</h5>
 						<ul class="list-unstyled contact-links">
-							<li><i class="icon icon-map-marker"></i><a href="https://maps.app.goo.gl/3kMUttsyy6Fy6rXi8" class="footer-link" target="_blank">Address: Stadion Singaperbangsa, Karawang, Indonesia</a></li>
+							<li><i class="icon icon-map-marker"></i><a href="https://maps.app.goo.gl/3kMUttsyy6Fy6rXi8" class="footer-link" target="_blank">Address: Stadion Singaperbangsa, Karawang</a></li>
 							<li><i class="icon icon-envelope3"></i><a href="mailto:tulangrangukarawang@gmail.com" class="footer-link">Mail: tulangrangukarawang@gmail.com</a></li>
 							<li><i class="icon icon-phone2"></i><a href="tel:+6285817128530" class="footer-link">Phone: +6285817128530</a></li>
 						</ul>
@@ -231,14 +250,9 @@
 	<script src="vendor/lazyload/js/lazyload.min.js"></script>
 	<script src="vendor/sticky-kit/js/sticky-kit.min.js"></script>
 
-	<!-- Map -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjiJtKE8Hw8niYWNvbmZFt0_dh1dfaoVA"></script>
-	<script src="vendor/infobox/js/infobox.js"></script>
-	<script src="js/map.js"></script>
-
 	<!-- Main Javascript File -->
 	<script src="js/scripts.js"></script>
-
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

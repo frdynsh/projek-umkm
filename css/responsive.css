@@ -1,17 +1,18 @@
 @media (max-width: 575px) {
-	#logo h1 {
+	#logo a {
 		width: 250px;
-		font-size: 1.3rem;
+		font-size: 1.1rem;
 	}
-	.hero-home {
-		padding-top: 50px;
-		border: 2px solid #15ff00;
+	ul#menuIcons {
+		right: -20px !important;
 	}
 	.hero-home .content h1 {
+		margin-top: 40px;
 		font-size: 1.8rem;
 	}
-	.hero-home p {
+	.hero-home .content p {
 		font-size: 1.875rem;
+		margin-bottom: 0;
 	}
 	.sticky-nav a.list-group-item {
 		font-size: 13px;
@@ -33,11 +34,7 @@
 		height: 450px;
 	}
 	.hero-home .content {
-		font-size: 16px;
 		padding: 0 15px;
-	}
-	.hero-home .content h3 {
-		font-size: 42px;
 	}
 	/* Mouse */
 	.mouse-frame {
@@ -86,7 +83,7 @@
 	/* Footer
 	==================================== */
 	footer #copy {
-		text-align: left;
+		text-align: left !important;
 		margin-bottom: 25px;
 	}
 	footer ul li {
@@ -196,3 +193,4 @@
 		width: 100px;
 	}
 }
+

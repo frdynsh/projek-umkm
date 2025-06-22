@@ -13,14 +13,13 @@
 10. SERVICES
 11. BANNER
 12. FAQ
-13. MAP
-14. CONTAINERS
-15. ORDER ITEMS
-16. FORM ELEMENTS
-17. ORDER SUMMARY
-18. CONFIRMATION
-19. BACK TO TOP
-20. RESPONSIVE
+13. CONTAINERS
+14. ORDER ITEMS
+15. FORM ELEMENTS
+16. ORDER SUMMARY
+17. CONFIRMATION
+18. BACK TO TOP
+19. RESPONSIVE
 */
 
 /* Preloader
@@ -166,17 +165,14 @@ button:focus {
 
 .pl-15 {
 	padding-left: 15px;
-	;
 }
 
 .pr-10 {
 	padding-right: 10px;
-	;
 }
 
 .pr-15 {
 	padding-right: 15px;
-	;
 }
 
 /* Modal Alert
@@ -213,12 +209,32 @@ button:focus {
 	font-weight: 400;
 	width: 100%;
 }
+.btn-confirm-delete {
+	margin-left: 5px;
+	border: 2px solid #333;
+	font-family: inherit;
+	color: #333;
+	background: #f8f8f8;
+	cursor: pointer;
+	padding: 7px 15px;
+	display: inline-block;
+	outline: 0;
+	font-size: 15px;
+	transition: all .2s;
+	border-radius: 5px;
+	font-weight: 400;
+	width: 100%;
+}
 
 .btn-modal:hover {
 	opacity: 0.7;
 }
 
 .btn-modal-close:hover {
+	border: 2px solid #F50057;
+	color: #F50057;
+}
+.btn-confirm-delete:hover {
 	border: 2px solid #F50057;
 	color: #F50057;
 }
@@ -1126,7 +1142,6 @@ a.btn-2:hover, .btn-2:hover {
 
 .faq-accordion .card-header h4 a i.indicator {
 	font-size: 1.125rem;
-	font-size: 1.125rem;
 	font-weight: normal;
 	float: right;
 	color: #F50057;
@@ -1349,7 +1364,7 @@ input.qtyminus, input.qtyplus {
 }
 
 input.qtyplus {
-	background: #fff url(../img/plus.png) no-repeat center center;
+	background: url(../img/plus.png) no-repeat center center;
 	right: 3px;
 	top: 2px;
 	text-indent: -9999px;
@@ -1357,7 +1372,7 @@ input.qtyplus {
 }
 
 input.qtyminus {
-	background: #fff url(../img/minus.png) no-repeat center center;
+	background: url(../img/minus.png) no-repeat center center;
 	right: 51px;
 	top: 2px;
 	text-indent: -9999px;
@@ -1441,7 +1456,6 @@ input.qtyminus {
 	margin: 0;
 	font-weight: 500;
 	color: #fff;
-	margin: 0;
 	padding: 0;
 	line-height: 1;
 }
